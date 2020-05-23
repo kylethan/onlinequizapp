@@ -1,0 +1,6 @@
+SIT305 Assignment 2 - World Quiz
+
+22/05/2020:
+- Connecting the app to Google Firebase
+- Building login function
+- Building signup fragment and storing user's identity on firebase
