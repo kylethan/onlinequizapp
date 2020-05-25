@@ -15,14 +15,17 @@
 
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="8dp">
 
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/newName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
+            android:drawableLeft="@drawable/ic_name"
+            android:drawablePadding="1dp"
+            android:hint=" Name"
             android:textColor="@color/colorPrimary"
             android:textColorHint="@color/colorPrimary"
             android:textSize="24sp"
@@ -33,12 +36,14 @@
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/newUserName"
-            android:hint="Username"
+            android:hint=" Username"
             android:textColorHint="@color/colorPrimary"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_username"
+            android:drawablePadding="1dp"
             app:met_baseColor="@color/colorPrimary"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="@color/colorPrimary"
@@ -46,13 +51,15 @@
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/newPassword"
-            android:hint="Password"
+            android:hint=" Password"
             android:textColorHint="@color/colorPrimary"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_pass"
+            android:drawablePadding="1dp"
             app:met_baseColor="@color/colorPrimary"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="@color/colorPrimary"
@@ -60,16 +67,30 @@
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/newEmail"
-            android:hint="Email"
+            android:hint=" Email"
             android:textColorHint="@color/colorPrimary"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawablePadding="1dp"
             app:met_baseColor="@color/colorPrimary"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="@color/colorPrimary"
             app:met_singleLineEllipsis="true"/>
+
+        <ProgressBar
+            android:id="@+id/progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:max="100"
+            android:visibility="gone"
+            android:layout_below="@+id/framelauout"
+            android:indeterminateTint="#1a09d6"
+            android:layout_marginTop="-7dp"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

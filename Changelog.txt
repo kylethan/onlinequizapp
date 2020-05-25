@@ -4,3 +4,8 @@ SIT305 Assignment 2 - World Quiz
 - Connecting the app to Google Firebase
 - Building login function
 - Building signup fragment and storing user's identity on firebase
+
+24/05/2020:
+- Creating email verification for account.
+- User will username which has email verification to access the app
+- Improving the Sign-up dialog: adding progress bar and field requirements. 
