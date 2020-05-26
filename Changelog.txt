@@ -9,3 +9,8 @@ SIT305 Assignment 2 - World Quiz
 - Creating email verification for account.
 - User will username which has email verification to access the app
 - Improving the Sign-up dialog: adding progress bar and field requirements. 
+
+26/05/2020
+- Singing up use email and password for users' identities (Firebase sign up method). User still need usernaem for more convenience in logging in.
+- User type the username and the database will check if the related email is sign up or not. 
+- Eliminate storing password on the firebase database for user's privacy.

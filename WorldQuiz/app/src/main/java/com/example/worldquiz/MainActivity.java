@@ -68,19 +68,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signIn(final String user, final String pass) {
+
+        if (user.isEmpty()) {
+            userName.setError("Username required");
+            userName.requestFocus();
+            return;
+        }
+
+        if (pass.isEmpty()) {
+            password.setError("Password required");
+            password.requestFocus();
+            return;
+        }
+
         users.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child(user).exists()) {
-                    if(!user.isEmpty()) {
+
                         User login = dataSnapshot.child(user).getValue(User.class);
-                        if(login.getPassword().equals(pass))
-                            Toast.makeText(MainActivity.this,"Login Successful", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(MainActivity.this,"Wrong password", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                        Toast.makeText(MainActivity.this, "Please enter your username", Toast.LENGTH_SHORT).show();
+                        fAuth.signInWithEmailAndPassword(login.getEmail(),pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(MainActivity.this,"Login Successful", Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                    Toast.makeText(MainActivity.this,"Wrong password", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                 }
                 else
                     Toast.makeText(MainActivity.this,"User does not exist", Toast.LENGTH_SHORT).show();
@@ -133,11 +149,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Boolean wantToCloseDialog = false;
-                //Do stuff, possibly set wantToCloseDialog to true then...
+
+
                 final String name = newName.getText().toString().trim();
                 final String username = newUserName.getText().toString().trim();
-                String passw = newPassword.getText().toString().trim();
+                final String passw = newPassword.getText().toString().trim();
                 final String email = newEmail.getText().toString().trim();
 
                 if (name.isEmpty()) {
@@ -172,57 +188,49 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
                     progressBar.setVisibility(View.VISIBLE);
-                    fAuth.createUserWithEmailAndPassword(email,passw)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
+                    final User user = new User(newName.getText().toString().trim(),
+                            newUserName.getText().toString().trim(),
+                            newEmail.getText().toString().trim());
+                    users.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    if (task.isSuccessful()) {
-                                        final User user = new User(newName.getText().toString().trim(),
-                                                newUserName.getText().toString().trim(),
-                                                newPassword.getText().toString().trim(),
-                                                newEmail.getText().toString().trim());
+                            if(dataSnapshot.child(user.getUserName()).exists()){
+                                progressBar.setVisibility(View.INVISIBLE);
+                                Toast.makeText(MainActivity.this,"User already existed!",Toast.LENGTH_SHORT).show();
 
-                                        users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                            }
+                            else {
+                                fAuth.createUserWithEmailAndPassword(email,passw)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                             @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if(!dataSnapshot.child(user.getUserName()).exists()){
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                                if (task.isSuccessful()) {
                                                     users.child(user.getUserName())
                                                             .setValue(user);
                                                     progressBar.setVisibility(View.GONE);
+                                                    users.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                                     Toast.makeText(MainActivity.this, "User Register successfully!",Toast.LENGTH_SHORT).show();
-                                                }
+                                                    dialog.dismiss();
 
+                                                }
                                                 else {
-
-
-                                                    progressBar.setVisibility(View.INVISIBLE);
-                                                    Toast.makeText(MainActivity.this,"User already existed!",Toast.LENGTH_SHORT).show();
-
+                                                    progressBar.setVisibility(View.GONE);
+                                                    Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
                                             }
                                         });
-                                    }
-                                    else {
-                                        progressBar.setVisibility(View.GONE);
-                                        Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
 
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
                 }
-                if(wantToCloseDialog)
-                {
-                    dialog.dismiss();
-                }
-                //else dialog stays open. Make sure you have an obvious way to close the dialog especially if you set cancellable to false.
             }
         });
 
