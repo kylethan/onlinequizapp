@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     MaterialEditText newName, newUserName, newPassword, newEmail;   //signup function
     MaterialEditText userName, password;                //signin function
     Button bsignin, bsignup;
-    ProgressBar progressBar;
+    ProgressBar progressBar,progressBar1;
 
     FirebaseDatabase database;
     DatabaseReference users;
@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         users = database.getReference("Users");
         fAuth = FirebaseAuth.getInstance();
+
+        progressBar1 = findViewById(R.id.progressbar1);
 
         userName = (MaterialEditText) findViewById(R.id.UserName);
         password = (MaterialEditText) findViewById(R.id.Password);
@@ -81,8 +83,9 @@ public class MainActivity extends AppCompatActivity {
             password.requestFocus();
             return;
         }
-
+        progressBar1.setVisibility(View.VISIBLE);
         users.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child(user).exists()) {
@@ -91,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
                         fAuth.signInWithEmailAndPassword(login.getEmail(),pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
+                                progressBar1.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
+
                                     startActivity(new Intent(getApplicationContext(),Homepage.class));
 
                                 }

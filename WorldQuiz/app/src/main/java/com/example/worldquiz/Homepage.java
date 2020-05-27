@@ -33,7 +33,7 @@ public class Homepage extends AppCompatActivity {
 
         recycler_category = findViewById(R.id.recyler_category);
         recycler_category.setHasFixedSize(true);
-        recycler_category.setLayoutManager(new GridLayoutManager(this,1));
+        recycler_category.setLayoutManager(new GridLayoutManager(this,2));
 
         //Getting Screen height
 

@@ -65,6 +65,18 @@
                     app:met_primaryColor="@color/colorPrimary"
                     app:met_singleLineEllipsis="true" />
 
+                <ProgressBar
+                    android:id="@+id/progressbar1"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:max="100"
+                    android:visibility="invisible"
+                    android:layout_below="@+id/framelauout"
+                    android:indeterminateTint="#1a09d6"
+                    android:layout_marginTop="-7dp"/>
+
             </LinearLayout>
             </androidx.cardview.widget.CardView>
             <LinearLayout
