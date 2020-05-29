@@ -30,5 +30,15 @@ SIT305 Assignment 2 - World Quiz
 	+ Creating function that helps calling out the questions from the category's questions and answers
 	+ Creating Current question and Question model that can get the answer of questions and question types for each category.
 - Adding progress bar for login function.
+- Creating CurrentQuestion.class: containing index of question in the questions list and answer state of questions: no answer, right answer and wrong answer:
+	+ Setting the colour for each answer sheet item: red for wrong, green for right and blue for non-answer.
 
-
+29/05/2020
+- Taking questions from Database from each category id and calling out to the answer sheet: takeQuestion method.
+	+ if the category does not have questions, it will send a dialog to let the user know
+	+otherwise, creating the answerSheetList depending on category's number of questions
+- Making Countdown Timer (20 mins)
+- Creating Answer Sheet according to each category: 
+	+ Dividing into 2 rows if the questions are more than 5 (grid layout)
+- Making the textview txt_right_answer to show the number answer over the total questions of each category.
+- Setting the toolbar to change the title depending on the category name.
