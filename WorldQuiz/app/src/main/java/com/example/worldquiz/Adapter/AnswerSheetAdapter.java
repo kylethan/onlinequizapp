@@ -33,11 +33,12 @@ public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
         if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.RIGHT_ANSWER)
             holder.question_item.setBackgroundResource(R.drawable.grid_question_right_answer);
         else if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.WRONG_ANSWER)
             holder.question_item.setBackgroundResource(R.drawable.grid_question_wrong_answer);
-        else if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.NO_ANSWER)
+        else
             holder.question_item.setBackgroundResource(R.drawable.grid_question_no_answer);
 
     }

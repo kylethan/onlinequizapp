@@ -37,7 +37,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
     ProgressBar progressBar;
 
     Question question;
-    int questionIndex = -1;
+    int questionIndex =-1;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -58,7 +58,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
         if (question != null) {
             layout_image = (FrameLayout) itemView.findViewById(R.id.layout_image);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressbarI);
-            if (question.getIsImageQuestion()) {
+            if (question.isImageQuestion()) {
                 ImageView image_question = (ImageView) itemView.findViewById(R.id.image_question);
                 Picasso.get().load(question.getQuestionImage()).into(image_question, new Callback() {
                     @Override
@@ -150,9 +150,8 @@ public class QuestionFragment extends Fragment implements IQuestion {
             for (int i=0; i<arrayAnswer.length;i++)
                 //Take first letter of Answer - Example: arr[0] = A. Melbourne, we will take letter 'A'
                 if (i<arrayAnswer.length-1)
-                    result.append(new StringBuilder((String)arrayAnswer[i]).substring(0,1)).append(",");    //
+                    result.append(new StringBuilder(((String)arrayAnswer[i]).substring(0,1)).append(","));    //
                 else
-                    //
                     result.append(new StringBuilder((String)arrayAnswer[i]).substring(0,1));
             }
         else if (Common.selected_values.size() == 1) {
@@ -166,7 +165,10 @@ public class QuestionFragment extends Fragment implements IQuestion {
             if (!TextUtils.isEmpty(result))
                 {
                     if (result.toString().equals(question.getCorrectAnswer()))
-                    currentQuestion.setType(Common.ANSWER_TYPE.RIGHT_ANSWER);
+                    {
+                        currentQuestion.setType(Common.ANSWER_TYPE.RIGHT_ANSWER);
+                    }
+
                     else
                         currentQuestion.setType(Common.ANSWER_TYPE.WRONG_ANSWER);
                 }
@@ -183,7 +185,6 @@ public class QuestionFragment extends Fragment implements IQuestion {
 
     @Override
     public void showCorrectAnswer() {
-
         //Bold the correct answer
         //Pattern A,B
         String[] correctAnswer = question.getCorrectAnswer().split(",");

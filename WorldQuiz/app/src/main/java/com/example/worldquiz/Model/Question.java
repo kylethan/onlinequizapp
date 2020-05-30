@@ -86,12 +86,12 @@ public class Question {
         this.correctAnswer = correctAnswer;
     }
 
-    public boolean getIsImageQuestion() {
+    public boolean isImageQuestion() {
         return isImageQuestion;
     }
 
-    public void setIsImageQuestion(boolean isImageQuestion) {
-        this.isImageQuestion = isImageQuestion;
+    public void setImageQuestion(boolean imageQuestion) {
+        isImageQuestion = imageQuestion;
     }
 
     public int getCategoryId() {

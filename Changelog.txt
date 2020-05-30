@@ -53,3 +53,12 @@ SIT305 Assignment 2 - World Quiz
 	+ Return selected Answer from fragment and compare to correct answer: getSelectedAnswer()
 	+ Show Correct Answer: showCorrectAnswer()
 	+ Disable answer and reset questions: disableAnswer() and resetAnswer()
+
+31/05/2020
+- Building method to check the result of answer immediately when user scroll to the next of previous question: 
+	+ setScrollingDirection(): Scroll left or right
+	+ onPageScrolled()
+	+ onPagedSelected(): check if user scroll left or right then get last recent fragment and calculate the result
+	+ Function showing correct answer to the answer sheet (change colour to red or green according to the wrong or right result)
+- Creating button function to finish the game after user reach the last question
+- Creating a small view next to submit button to display number of wrong answers. 
