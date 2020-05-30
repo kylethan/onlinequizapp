@@ -1,5 +1,7 @@
 package com.example.worldquiz;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.MenuItem;
@@ -7,15 +9,16 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 
+
 import com.example.worldquiz.Adapter.AnswerSheetAdapter;
+import com.example.worldquiz.Adapter.QuestionFragmentAdapter;
 import com.example.worldquiz.Common.Common;
 import com.example.worldquiz.DBHelper.DBHelper;
 import com.example.worldquiz.Model.CurrentQuestion;
-import com.example.worldquiz.Model.Question;
-import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 
-import com.github.javiersantos.materialstyleddialogs.enums.Style;
+import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -25,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +41,9 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
 
     RecyclerView answer_sheet_view;
     AnswerSheetAdapter answerSheetAdapter;
+
+    ViewPager viewPager;
+    TabLayout tabLayout;
 
     @Override
     protected void onDestroy() {
@@ -85,14 +92,37 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                 answer_sheet_view.setLayoutManager(new GridLayoutManager(this,Common.questionList.size()/2));
             answerSheetAdapter = new AnswerSheetAdapter(this,Common.answerSheetList);
             answer_sheet_view.setAdapter(answerSheetAdapter);
+
+
+            viewPager = (ViewPager) findViewById(R.id.viewpaper);
+            tabLayout = (TabLayout) findViewById(R.id.sliding);
+
+            getFragmentList();
+
+            QuestionFragmentAdapter questionFragmentAdapter = new QuestionFragmentAdapter(getSupportFragmentManager(),
+                    1,
+                    this,
+                    Common.fragmentList);
+            viewPager.setAdapter(questionFragmentAdapter);
+            tabLayout.setupWithViewPager(viewPager);
         }
 
 
+    }
+    //Generating question fragment base on number of item in QuestionList
+    private void getFragmentList() {
+        for (int i = 0; i<Common.questionList.size(); i++) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("index",i);
+            QuestionFragment fragment = new QuestionFragment();
+            fragment.setArguments(bundle);
 
+            Common.fragmentList.add(fragment);
+        }
 
     }
 
-
+    //Countdown for 20 minutes and reset when redo the quiz or click on another category
     private void countTimer() {
         if (Common.countDownTimer == null) {
             Common.countDownTimer = new CountDownTimer(Common.TOTAL_TIME,1000) {
@@ -133,14 +163,23 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
     private void takeQuestion()  {
         Common.questionList = DBHelper.getInstance(this).getQuestionByCategory(Common.selectedCategory.getId());
         if (Common.questionList.size() == 0) {
-            new MaterialStyledDialog.Builder(this)
-                    .setTitle(R.string.Sorry)
+            new BottomDialog.Builder(this)
+                    .setTitle("Sorry!")
+                    .setContent("We are preparing questions for this category")
                     .setIcon(R.drawable.dissatisfied)
-                    .setDescription(R.string.NoQuestion)
-                    .setHeaderColor(R.color.colorPrimary)
-                    .setPositiveText("I understand")
-                    .show()
-                    .setCancelable(true);
+                    .setPositiveText("I UNDERSTAND")
+                    .setPositiveBackgroundColorResource(R.color.colorPrimary)
+                    //setPositiveBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary)
+                    .setPositiveTextColorResource(android.R.color.white)
+                    //setPositiveTextColor(ContextCompat.getColor(this, android.R.color.colorPrimary)
+                    .onPositive(new BottomDialog.ButtonCallback() {
+                        @Override
+                        public void onClick(BottomDialog dialog) {
+                            startActivity(new Intent(getApplicationContext(), Homepage.class));
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
 
 
         } else {

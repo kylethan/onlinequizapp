@@ -1,5 +1,6 @@
 package com.example.worldquiz;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
+import android.view.Menu;
 import android.widget.Space;
 
 import androidx.appcompat.widget.Toolbar;
@@ -25,10 +27,17 @@ public class Homepage extends AppCompatActivity {
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.category_menu,menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homepage);
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(myToolbar);
 
 
         recycler_category = findViewById(R.id.recyler_category);

@@ -8,7 +8,14 @@
     tools:context=".Homepage">
 
 
-
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.AppBarOverLay"
+        app:popupTheme="@style/AppTheme.PopupOverlay"></androidx.appcompat.widget.Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"

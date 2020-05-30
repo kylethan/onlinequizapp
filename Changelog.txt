@@ -42,3 +42,14 @@ SIT305 Assignment 2 - World Quiz
 	+ Dividing into 2 rows if the questions are more than 5 (grid layout)
 - Making the textview txt_right_answer to show the number answer over the total questions of each category.
 - Setting the toolbar to change the title depending on the category name.
+
+30/05/2020
+- Generating question fragment base on number of item in QuestionList: getFragmentList() method.
+- Making Adapter for Question Fragment: QuestionFragmentAdapter.java
+- Applying Adapter in viewPager and then tabLayout for horizontal on-screen scrolling
+- Displaying questions from DB into Question Fragment.
+- Building checkbox function (QuestionFragment.java)
+- (QuestionFragment.java) Building methods to:
+	+ Return selected Answer from fragment and compare to correct answer: getSelectedAnswer()
+	+ Show Correct Answer: showCorrectAnswer()
+	+ Disable answer and reset questions: disableAnswer() and resetAnswer()
