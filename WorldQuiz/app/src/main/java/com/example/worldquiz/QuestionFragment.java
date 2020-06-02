@@ -157,7 +157,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
         else if (Common.selected_values.size() == 1) {
             //if only one choice
             Object[] arrayAnswer = Common.selected_values.toArray();
-            result.append((String)arrayAnswer[0]).substring(0,1);
+            result.append(((String)arrayAnswer[0]).substring(0,1));
 
         }
         if (question != null) {

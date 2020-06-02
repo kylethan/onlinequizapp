@@ -62,3 +62,16 @@ SIT305 Assignment 2 - World Quiz
 	+ Function showing correct answer to the answer sheet (change colour to red or green according to the wrong or right result)
 - Creating button function to finish the game after user reach the last question
 - Creating a small view next to submit button to display number of wrong answers. 
+
+01/06/2020
+- Creating Result Activity to show number of right, wrong and no answers:
+	+ Designing layout for result activity
+	+ Creating function to finish button to turn to Result Activity
+	+ Creating function to calculate and show the result in Result Activity
+	+ Setting Adapter for Recycler view result: showing all answer status (wrong, right or non-answer): layout_result_item.xml (changing background and icon), ResultGridAdapter.java
+
+
+02/06/2020
+- Register Broadcast process in Result Activity to get back to the previous questions and answers in question activity when clicking to specific question button in result activity.
+- Adding Result Menu for 2 features: View Answer and Do Quiz Again
+

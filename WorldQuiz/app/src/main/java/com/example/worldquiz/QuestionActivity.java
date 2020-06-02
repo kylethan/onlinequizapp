@@ -1,24 +1,35 @@
 package com.example.worldquiz;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import  android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.TextView;
 
 
 import com.example.worldquiz.Adapter.AnswerSheetAdapter;
+import com.example.worldquiz.Adapter.AnswerSheetHelperAdapter;
 import com.example.worldquiz.Adapter.QuestionFragmentAdapter;
 import com.example.worldquiz.Common.Common;
+import com.example.worldquiz.Common.SpaceDecoration;
 import com.example.worldquiz.DBHelper.DBHelper;
 import com.example.worldquiz.Model.CurrentQuestion;
 
+import com.example.worldquiz.Model.Question;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +39,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -36,16 +48,19 @@ import java.util.concurrent.TimeUnit;
 
 public class QuestionActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int CODE_GET_RESULT = 9999 ;
     int time_play = Common.TOTAL_TIME;
     boolean isAnswerModeView = false;
 
     TextView txt_right_answer,txt_timer, txt_wrong_answer;
 
-    RecyclerView answer_sheet_view;
+    RecyclerView answer_sheet_view, answer_sheet_view_helper;
     AnswerSheetAdapter answerSheetAdapter;
+    AnswerSheetHelperAdapter answerSheetHelperAdapter;
 
     ViewPager viewPager;
     TabLayout tabLayout;
+    DrawerLayout drawer;
 
     @Override
     protected void onDestroy() {
@@ -53,6 +68,18 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
             Common.countDownTimer.cancel();
         super.onDestroy();
     }
+
+    BroadcastReceiver gotoQuestionNum = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().toString().equals(Common.KEY_GO_TO_QUESTION)) {
+                int question = intent.getIntExtra(Common.KEY_GO_TO_QUESTION,-1);
+                if (question != -1)
+                    viewPager.setCurrentItem(question);
+                drawer.closeDrawer(Gravity.LEFT);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +89,55 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
         toolbar.setTitle(Common.selectedCategory.getName());
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer,toolbar,R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        View hView = navigationView.getHeaderView(0);
+
+        answer_sheet_view_helper = (RecyclerView) hView.findViewById(R.id.answersheet);
+        answer_sheet_view_helper.setHasFixedSize(true);
+        answer_sheet_view_helper.setLayoutManager(new GridLayoutManager(this,3));
+        answer_sheet_view_helper.addItemDecoration(new SpaceDecoration(2));
+        answerSheetHelperAdapter = new AnswerSheetHelperAdapter(this,Common.answerSheetList);
+        answer_sheet_view_helper.setAdapter(answerSheetHelperAdapter);
+
+        Button btn_done = hView.findViewById(R.id.btn_done);
+        btn_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isAnswerModeView) {
+                    new BottomDialog.Builder(QuestionActivity.this)
+                            .setTitle("Finished?")
+                            .setIcon(R.drawable.ic_mood_black_24dp)
+                            .setContent("Do you want to submit?")
+                            .setNegativeText("No...")
+                            .onNegative(new BottomDialog.ButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull BottomDialog bottomDialog) {
+                                    bottomDialog.dismiss();
+                                }
+                            })
+                            .setPositiveText("Yes!")
+                            .onPositive(new BottomDialog.ButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull BottomDialog bottomDialog) {
+                                    bottomDialog.dismiss();
+                                    finishGame();
+                                    drawer.closeDrawer(Gravity.LEFT);
+                                }
+                            }).show();
+                }
+                else
+                    finishGame();
+            }
+        });
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(gotoQuestionNum, new IntentFilter(Common.KEY_GO_TO_QUESTION));
 
         takeQuestion();     //taking questions from DB
 
@@ -97,7 +164,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
 
 
             viewPager = (ViewPager) findViewById(R.id.viewpaper);
-            viewPager.setOffscreenPageLimit(Common.questionList.size()); // Fixed ViewPager size
+
             tabLayout = (TabLayout) findViewById(R.id.sliding);
 
             getFragmentList();
@@ -169,6 +236,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                     CurrentQuestion question_state = questionFragment.getSelectedAnswer();
                     Common.answerSheetList.set(pos,question_state); //Set question answer for answersheet
                     answerSheetAdapter.notifyDataSetChanged();  //Change color in answer sheet
+                    answerSheetHelperAdapter.notifyDataSetChanged();
 
                     countCorrectAnswer();
                     
@@ -191,6 +259,23 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                 }
             });
         }
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
 
     }
@@ -201,7 +286,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
         CurrentQuestion question_state = questionFragment.getSelectedAnswer();
         Common.answerSheetList.set(pos,question_state); //Set question answer for answersheet
         answerSheetAdapter.notifyDataSetChanged();  //Change color in answer sheet
-
+        answerSheetHelperAdapter.notifyDataSetChanged();
 
         countCorrectAnswer();
 
@@ -214,7 +299,15 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
             questionFragment.showCorrectAnswer();
             questionFragment.disableAnswer();
         }
+
         //Navigating to new Result Activity
+        Intent intent = new Intent(QuestionActivity.this,ResultActivity.class);
+        Common.timer = Common.TOTAL_TIME - time_play;
+        Common.no_answer_count = Common.questionList.size() - (Common.wrong_answer_count+Common.right_answer_count);
+        Common.data_question = new StringBuilder(new Gson().toJson(Common.answerSheetList));
+
+        startActivityForResult(intent,CODE_GET_RESULT);
+
     }
 
     private void countCorrectAnswer() {
@@ -257,7 +350,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
 
                 @Override
                 public void onFinish() {
-                    //Finish Game
+                    finishGame();
                 }
             }.start();
         } else {
@@ -337,7 +430,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        return false;
+        return true;
     }
 
     @Override
@@ -367,9 +460,64 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                             }
                         }).show();
             }
+            else
+                finishGame();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE_GET_RESULT)
+        {
+            if (resultCode == Activity.RESULT_OK) {
+                String action = data.getStringExtra("action");
+                if (action == null || TextUtils.isEmpty(action)) {
+                    int questionNum = data.getIntExtra(Common.KEY_BACK_FROM_RESULT,-1);
+                    viewPager.setCurrentItem(questionNum);
+
+                    isAnswerModeView = true;
+                    Common.countDownTimer.cancel();
+                    txt_wrong_answer.setVisibility(View.GONE);
+                    txt_right_answer.setVisibility(View.GONE);
+                    txt_timer.setVisibility(View.GONE);
+                }
+                else {
+                    if (action.equals("viewquizanswer")) {
+                        viewPager.setCurrentItem(0);
+
+                        isAnswerModeView = true;
+                        Common.countDownTimer.cancel();
+                        txt_wrong_answer.setVisibility(View.GONE);
+                        txt_right_answer.setVisibility(View.GONE);
+                        txt_timer.setVisibility(View.GONE);
+
+                        for (int i = 0; i < Common.fragmentList.size();i++) {
+                            Common.fragmentList.get(i).showCorrectAnswer();
+                            Common.fragmentList.get(i).disableAnswer();
+                        }
+                    }
+                    else if (action.equals("doitagain")) {
+                        viewPager.setCurrentItem(0);
+
+                        isAnswerModeView = false;
+                        countTimer();
+                        txt_wrong_answer.setVisibility(View.VISIBLE);
+                        txt_right_answer.setVisibility(View.VISIBLE);
+                        txt_timer.setVisibility(View.VISIBLE);
+
+                        for (CurrentQuestion item:Common.answerSheetList)
+                            item.setType(Common.ANSWER_TYPE.NO_ANSWER);     //Reset all question
+                        answerSheetAdapter.notifyDataSetChanged();
+                        answerSheetHelperAdapter.notifyDataSetChanged();
+
+                        for (int i = 0;i < Common.fragmentList.size();i++)
+                            Common.fragmentList.get(i).resetQuestion();
+                    }
+                }
+            }
+        }
+    }
 }

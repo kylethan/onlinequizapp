@@ -1,6 +1,7 @@
 package com.example.worldquiz.Adapter;
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ public class QuestionFragmentAdapter extends FragmentPagerAdapter {
 
     Context context;
     List<QuestionFragment> fragmentList;
+
 
     public QuestionFragmentAdapter(@NonNull FragmentManager fm, int behavior, Context context, List<QuestionFragment> fragmentList) {
         super(fm, behavior);
@@ -38,4 +40,5 @@ public class QuestionFragmentAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return new StringBuilder("Question ").append(position+1).toString();
     }
+
 }
