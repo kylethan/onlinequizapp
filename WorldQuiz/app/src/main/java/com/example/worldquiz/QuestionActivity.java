@@ -151,9 +151,9 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
             txt_right_answer.setVisibility(View.VISIBLE);
 
             txt_right_answer.setText((new StringBuilder(String.format("%d/%d",Common.right_answer_count,Common.questionList.size()))));
-            
+
             countTimer();
-            
+
             //answer sheet view
             answer_sheet_view = (RecyclerView) findViewById(R.id.grid_answer);
             answer_sheet_view.setHasFixedSize(true);
@@ -239,7 +239,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                     answerSheetHelperAdapter.notifyDataSetChanged();
 
                     countCorrectAnswer();
-                    
+
                     txt_right_answer.setText(new StringBuilder(String.format("%d",Common.right_answer_count))
                     .append("/")
                     .append(String.format("%d",Common.questionList.size())).toString());
@@ -259,23 +259,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                 }
             });
         }
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
 
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
 
     }
@@ -374,6 +358,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void takeQuestion()  {
+
         Common.questionList = DBHelper.getInstance(this).getQuestionByCategory(Common.selectedCategory.getId());
         if (Common.questionList.size() == 0) {
             new BottomDialog.Builder(this)

@@ -22,18 +22,23 @@ import android.widget.TextView;
 import com.example.worldquiz.Adapter.ResultGridAdapter;
 import com.example.worldquiz.Common.Common;
 import com.example.worldquiz.Common.SpaceDecoration;
+import com.example.worldquiz.Model.Score;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
 public class ResultActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    TextView txt_timer, txt_result, txt_right_answer;
+    TextView txt_timer, txt_result, txt_right_answer, txt_score;
     Button btn_filter_total,btn_filter_right,btn_filter_wrong,btn_filter_no_answer;
     RecyclerView recyclerView_result;
 
     ResultGridAdapter adapter, filtered_adapter;
+    FirebaseDatabase database;
+    DatabaseReference score;
 
     BroadcastReceiver backToQuestion = new BroadcastReceiver() {
         @Override
@@ -70,6 +75,7 @@ public class ResultActivity extends AppCompatActivity {
         txt_result = (TextView) findViewById(R.id.txt_result);
         txt_right_answer = (TextView) findViewById(R.id.txt_right_answer);
         txt_timer = (TextView) findViewById(R.id.txt_time);
+        txt_score = (TextView) findViewById(R.id.txt_score);
 
         btn_filter_no_answer = (Button) findViewById(R.id.btn_filter_no_answer);
         btn_filter_right = (Button) findViewById(R.id.btn_filter_right_answer);
@@ -89,6 +95,9 @@ public class ResultActivity extends AppCompatActivity {
                 TimeUnit.MILLISECONDS.toMinutes(Common.timer),
                 TimeUnit.MILLISECONDS.toSeconds(Common.timer) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Common.timer))));
+
+        int totalscore = Common.right_answer_count*10;
+        txt_score.setText(new StringBuilder("").append(totalscore));
 
         txt_right_answer.setText(new StringBuilder("").append(Common.right_answer_count).append("/")
         .append(Common.questionList.size()));
@@ -159,6 +168,13 @@ public class ResultActivity extends AppCompatActivity {
                 recyclerView_result.setAdapter(filtered_adapter);
             }
         });
+        database = FirebaseDatabase.getInstance();
+        score = database.getReference("Score");
+
+        score.child(String.format("%s_%s",Common.currentUser.getUserName(),Common.selectedCategory.getId()))
+                .setValue(new Score(String.format("%s_%s",Common.currentUser.getUserName(),Common.selectedCategory.getId()),
+                        Common.currentUser.getName(),
+                        String.valueOf(totalscore)));
     }
 
     @Override
@@ -177,6 +193,11 @@ public class ResultActivity extends AppCompatActivity {
             case R.id.menu_view_answer:
                 viewQuizAnswer();
                 break;
+            case R.id.menu_show_result:
+                Intent intent1 = new Intent(ResultActivity.this,RankingActivity.class);
+                startActivity(intent1);
+                break;
+
             case android.R.id.home:
                 Intent intent = new Intent(getApplicationContext(),Homepage.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //Delete all activity
@@ -191,7 +212,7 @@ public class ResultActivity extends AppCompatActivity {
     private void viewQuizAnswer() {
         Intent returnIntent = new Intent();
         returnIntent.putExtra("action","viewquizanswer");
-        setResult(Activity.RESULT_OK,returnIntent);
+        ResultActivity.this.setResult(Activity.RESULT_OK,returnIntent);
         finish();
     }
 
@@ -214,7 +235,7 @@ public class ResultActivity extends AppCompatActivity {
                         bottomDialog.dismiss();
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("action","doitagain");
-                        setResult(Activity.RESULT_OK,returnIntent);
+                        ResultActivity.this.setResult(Activity.RESULT_OK,returnIntent);
                         finish();
                     }
                 }).show();

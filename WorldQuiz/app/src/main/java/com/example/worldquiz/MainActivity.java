@@ -6,14 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.worldquiz.Common.Common;
 import com.example.worldquiz.user.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     MaterialEditText userName, password;                //signin function
     Button bsignin, bsignup;
     ProgressBar progressBar,progressBar1;
+    CheckBox checkBox;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     FirebaseDatabase database;
     DatabaseReference users;
@@ -47,12 +53,19 @@ public class MainActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
 
         progressBar1 = findViewById(R.id.progressbar1);
+        checkBox = findViewById(R.id.checkBox);
+
+
 
         userName = (MaterialEditText) findViewById(R.id.UserName);
         password = (MaterialEditText) findViewById(R.id.Password);
 
         bsignin = findViewById(R.id.signin);
         bsignup = findViewById(R.id.signup);
+
+        sharedPreferences = getSharedPreferences("Login",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        checkPreferences();
 
         bsignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,11 +77,28 @@ public class MainActivity extends AppCompatActivity {
         bsignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (checkBox.isChecked()) {
+                    editor.putString("email",userName.getText().toString());
+                    editor.putString("password",password.getText().toString());
+                    editor.commit();
+                }
+                else {
+                    editor.putString("email","");
+                    editor.putString("password","");
+                    editor.commit();
+                }
+                editor.putBoolean("checkbox",checkBox.isChecked());
+                editor.commit();
+
                 signIn(userName.getText().toString().trim(),password.getText().toString().trim());
+
             }
         });
 
     }
+
+
 
     private void signIn(final String user, final String pass) {
 
@@ -88,15 +118,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                progressBar1.setVisibility(View.VISIBLE);
                 if(dataSnapshot.child(user).exists()) {
 
-                        User login = dataSnapshot.child(user).getValue(User.class);
+                        final User login = dataSnapshot.child(user).getValue(User.class);
                         fAuth.signInWithEmailAndPassword(login.getEmail(),pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar1.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
-
+                                    Common.currentUser = login;
                                     startActivity(new Intent(getApplicationContext(),Homepage.class));
 
                                 }
@@ -105,8 +136,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                 }
-                else
+                else {
+                    progressBar1.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this,"User does not exist", Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             @Override
@@ -119,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     private void showSignUpDialog() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         alertDialog.setTitle("Sign Up");
-        alertDialog.setMessage("Please fullfill the information");
+        alertDialog.setMessage("Please fulfill the information");
 
         LayoutInflater inflater = this.getLayoutInflater();
         View sign_up_layout = inflater.inflate(R.layout.sign_up_layout,null);
@@ -129,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
         newPassword = (MaterialEditText)sign_up_layout.findViewById(R.id.newPassword);
         newEmail = (MaterialEditText)sign_up_layout.findViewById(R.id.newEmail);
         progressBar = sign_up_layout.findViewById(R.id.progressbar);
-
 
 
         alertDialog.setView(sign_up_layout);
@@ -203,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
                             if(dataSnapshot.child(user.getUserName()).exists()){
-                                progressBar.setVisibility(View.INVISIBLE);
+                                progressBar.setVisibility(View.GONE);
                                 Toast.makeText(MainActivity.this,"User already existed!",Toast.LENGTH_SHORT).show();
 
                             }
@@ -242,4 +275,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private void checkPreferences() {
+        String mail = sharedPreferences.getString("email","");
+        String pass = sharedPreferences.getString("password","");
+        userName.setText(mail);
+        password.setText(pass);
+        boolean valueChecked = sharedPreferences.getBoolean("checkbox",false);
+        checkBox.setChecked(valueChecked);
+    }
+
 }

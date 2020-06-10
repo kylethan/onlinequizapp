@@ -75,3 +75,12 @@ SIT305 Assignment 2 - World Quiz
 - Register Broadcast process in Result Activity to get back to the previous questions and answers in question activity when clicking to specific question button in result activity.
 - Adding Result Menu for 2 features: View Answer and Do Quiz Again
 
+10/06/2020
+- Designing category screen: 
+	+ adding icons and changing category's name
+	+ Adding logo for the app
+- Adding Remember Me Function
+- Building scoreboard: 
+	+ Storing users' score on firebase: base one category Id and username
+	+ Displaying on Ranking Activity
+- Updating questions in database

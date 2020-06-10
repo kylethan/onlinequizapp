@@ -8,25 +8,36 @@
     tools:context=".MainActivity">
 
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="257dp"
+        android:layout_height="183dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/quiz" />
 
-        <RelativeLayout
-            android:layout_width="0dp"
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/login"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.cardview.widget.CardView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-
-                app:cardElevation="4dp">
+            app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,9 +49,9 @@
                     android:id="@+id/UserName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Username"
                     android:drawableLeft="@drawable/ic_username"
                     android:drawablePadding="5dp"
+                    android:hint="Username"
                     android:textColor="@color/colorPrimary"
                     android:textColorHint="@color/colorPrimary"
                     android:textSize="24sp"
@@ -53,10 +64,10 @@
                     android:id="@+id/Password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword"
                     android:drawableLeft="@drawable/ic_pass"
                     android:drawablePadding="5dp"
+                    android:hint="Password"
+                    android:inputType="textPassword"
                     android:textColor="@color/colorPrimary"
                     android:textColorHint="@color/colorPrimary"
                     android:textSize="24sp"
@@ -65,46 +76,61 @@
                     app:met_primaryColor="@color/colorPrimary"
                     app:met_singleLineEllipsis="true" />
 
+                <CheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remember me"
+                    android:layout_below="@+id/login"
+                    android:layout_gravity="center"
+                    android:textColor="#808B96"
+                    android:textSize="18sp" />
+
                 <ProgressBar
                     android:id="@+id/progressbar1"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:indeterminate="true"
-                    android:max="100"
-                    android:visibility="invisible"
-                    android:layout_below="@+id/framelauout"
                     android:indeterminateTint="#1a09d6"
-                    android:layout_marginTop="-7dp"/>
+                    android:max="100"
+                    android:visibility="invisible" />
+
 
             </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <LinearLayout
-                android:layout_below="@id/login"
-                android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/signup"
-                    android:text="Sign Up"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
-
-                <Button
-                    android:id="@+id/signin"
-                    android:text="Sign In"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
 
-        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/login"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/signup"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sign Up" />
+
+            <Button
+                android:id="@+id/signin"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sign In" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -174,12 +174,14 @@ public class QuestionFragment extends Fragment implements IQuestion {
                 }
             else
                 currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
+
+
         }
         else {
             Toast.makeText(getContext(), "Cannot get question", Toast.LENGTH_SHORT).show();
             currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
         }
-        Common.selected_values.clear(); //always clear selected_value when compare done
+        Common.selected_values.clear();//always clear selected_value when compare done
         return currentQuestion;
     }
 

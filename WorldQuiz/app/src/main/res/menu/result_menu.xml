@@ -10,7 +10,11 @@
 
     <item
         android:id="@+id/menu_do_quiz_again"
-        android:title="Do Quiz Again"
+        android:title="Do Again"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_show_result"
+        android:title="Scoreboard"
         app:showAsAction="never"/>
 
 
