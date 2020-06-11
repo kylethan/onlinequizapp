@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,11 +53,11 @@ public class RankingActivity extends AppCompatActivity {
         score = database.getReference("Score");
         rankingtable = database.getReference("Ranking");
 
-        updateScore(Common.currentUser.getName(), new RankingCallback<Ranking>() {
+        updateScore(Common.currentUser.getUserName(), new RankingCallback<Ranking>() {
             @Override
             public void callBack(Ranking ranking) {
                 //Updating to ranking table
-                rankingtable.child(ranking.getName())
+                rankingtable.child(Common.currentUser.getUserName())
                         .setValue(ranking);
                 showRanking();  // Sorting and displaying ranking table
             }
@@ -71,7 +72,7 @@ public class RankingActivity extends AppCompatActivity {
                 rankingtable.orderByChild("score")
         ) {
             @Override
-            protected void populateViewHolder(RankingAdapter rankingAdapter, Ranking ranking, int i) {
+            protected void populateViewHolder(RankingAdapter rankingAdapter, final Ranking ranking, int i) {
                 rankingAdapter.txt_name.setText(ranking.getName());
                 rankingAdapter.txt_score.setText(String.valueOf(ranking.getScore()));
 
@@ -80,6 +81,9 @@ public class RankingActivity extends AppCompatActivity {
                 rankingAdapter.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
+                        Intent scoreDetail = new Intent(RankingActivity.this, ScoreDetail.class);
+                        scoreDetail.putExtra("viewUser",ranking.getName());
+                        startActivity(scoreDetail);
 
                     }
                 });
@@ -112,7 +116,7 @@ public class RankingActivity extends AppCompatActivity {
 
 
     private void updateScore(final String name, final RankingCallback<Ranking> callback) {
-        score.orderByChild("user").equalTo(name)
+        score.orderByChild("userName").equalTo(name)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -123,7 +127,7 @@ public class RankingActivity extends AppCompatActivity {
 
                         //After summary all score, processing sum variable on Firebase
 
-                        Ranking ranking = new Ranking(name,sum);
+                        Ranking ranking = new Ranking(Common.currentUser.getName(),sum);
                         callback.callBack(ranking);
                     }
 

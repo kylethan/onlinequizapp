@@ -84,3 +84,9 @@ SIT305 Assignment 2 - World Quiz
 	+ Storing users' score on firebase: base one category Id and username
 	+ Displaying on Ranking Activity
 - Updating questions in database
+
+11/06/2020
+- Adding scoreboard to show every category's score: user can now see your total score and each category score
+- Adding user profile and be able to update the name, user's name will be automatically update on scoreboard. 
+- Adding signing out function for firebase account
+- Editing some UI/UX layout.

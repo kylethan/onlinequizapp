@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/menu_settings"
-        android:orderInCategory="100"
-        android:title="Settings"
-        app:showAsAction="never" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <item android:id="@+id/notification_background"
+        android:title=""
+        android:icon="@drawable/ic_settings_white_24dp"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_settings"
+                android:icon="@drawable/ic_baseline_account_circle_24"
+                android:title="Your Profile"/>
+            <item
+                android:id="@+id/menu_scoreboard"
+                android:icon="@drawable/ic_baseline_score_24"
+                android:title="Scoreboard"/>
+            <item
+                android:id="@+id/menu_signout"
+                android:icon="@drawable/ic_baseline_power_settings_new_24"
+                android:title="Sign Out"/>
+
+        </menu>
+    </item>
+
+
+
 </menu>

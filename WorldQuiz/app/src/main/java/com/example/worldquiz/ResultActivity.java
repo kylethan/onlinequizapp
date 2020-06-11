@@ -174,7 +174,10 @@ public class ResultActivity extends AppCompatActivity {
         score.child(String.format("%s_%s",Common.currentUser.getUserName(),Common.selectedCategory.getId()))
                 .setValue(new Score(String.format("%s_%s",Common.currentUser.getUserName(),Common.selectedCategory.getId()),
                         Common.currentUser.getName(),
-                        String.valueOf(totalscore)));
+                        String.valueOf(totalscore),
+                        String.valueOf(Common.selectedCategory.getId()),
+                        Common.selectedCategory.getName(),
+                        Common.currentUser.getUserName()));
     }
 
     @Override
