@@ -8,7 +8,18 @@
     <View
         android:id="@+id/question_item"
         android:background="@drawable/grid_question_no_answer"
-        android:layout_width="10dp"
-        android:layout_height="10dp"/>
+        android:layout_width="30dp"
+        android:layout_height="30dp">
+
+    </View>
+    <TextView
+        android:id="@+id/txt_question_number"
+        android:text="10"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

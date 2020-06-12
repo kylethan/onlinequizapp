@@ -49,13 +49,14 @@ public class ResultActivity extends AppCompatActivity {
             }
         }
 
-        private void goBackActivityWithQuestion(int question) {
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra(Common.KEY_BACK_FROM_RESULT,question);
-            ResultActivity.this.setResult(Activity.RESULT_OK,returnIntent);
-            finish();
-        }
+
     };
+    private void goBackActivityWithQuestion(int question) {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(Common.KEY_BACK_FROM_RESULT,question);
+        setResult(Activity.RESULT_OK,returnIntent);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,7 @@ public class ResultActivity extends AppCompatActivity {
         else if (percent < 50)
             txt_result.setText("FAIL");
 
+        //Setting filter button event showing related result list such as total, right, wrong, and no answers
         btn_filter_total.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,7 +217,7 @@ public class ResultActivity extends AppCompatActivity {
     private void viewQuizAnswer() {
         Intent returnIntent = new Intent();
         returnIntent.putExtra("action","viewquizanswer");
-        ResultActivity.this.setResult(Activity.RESULT_OK,returnIntent);
+        setResult(Activity.RESULT_OK,returnIntent);
         finish();
     }
 
@@ -236,10 +238,9 @@ public class ResultActivity extends AppCompatActivity {
                     @Override
                     public void onClick(@NonNull BottomDialog bottomDialog) {
                         bottomDialog.dismiss();
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("action","doitagain");
-                        ResultActivity.this.setResult(Activity.RESULT_OK,returnIntent);
-                        finish();
+                        Intent intent = new Intent(getApplicationContext(),QuestionActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //Delete all activity
+                        startActivity(intent);
                     }
                 }).show();
     }

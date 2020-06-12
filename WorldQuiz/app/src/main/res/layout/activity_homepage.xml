@@ -17,12 +17,13 @@
         android:theme="@style/AppTheme.AppBarOverLay"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:layout_marginTop="13dp"
             android:layout_gravity="center"
+            android:layout_marginTop="13dp"
             app:srcCompat="@drawable/quiz" />
     </androidx.appcompat.widget.Toolbar>
 

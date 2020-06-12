@@ -1,11 +1,7 @@
 package com.example.worldquiz;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import  android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -14,18 +10,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
 import com.example.worldquiz.Adapter.AnswerSheetAdapter;
-import com.example.worldquiz.Adapter.AnswerSheetHelperAdapter;
 import com.example.worldquiz.Adapter.QuestionFragmentAdapter;
 import com.example.worldquiz.Common.Common;
-import com.example.worldquiz.Common.SpaceDecoration;
 import com.example.worldquiz.DBHelper.DBHelper;
 import com.example.worldquiz.Model.CurrentQuestion;
 
-import com.example.worldquiz.Model.Question;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -39,7 +33,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -54,9 +47,9 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
 
     TextView txt_right_answer,txt_timer, txt_wrong_answer;
 
-    RecyclerView answer_sheet_view, answer_sheet_view_helper;
+    RecyclerView answer_sheet_view;
     AnswerSheetAdapter answerSheetAdapter;
-    AnswerSheetHelperAdapter answerSheetHelperAdapter;
+
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -69,17 +62,6 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
         super.onDestroy();
     }
 
-    BroadcastReceiver gotoQuestionNum = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().toString().equals(Common.KEY_GO_TO_QUESTION)) {
-                int question = intent.getIntExtra(Common.KEY_GO_TO_QUESTION,-1);
-                if (question != -1)
-                    viewPager.setCurrentItem(question);
-                drawer.closeDrawer(Gravity.LEFT);
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,55 +71,13 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
         toolbar.setTitle(Common.selectedCategory.getName());
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer,toolbar,R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-
-        View hView = navigationView.getHeaderView(0);
-
-        answer_sheet_view_helper = (RecyclerView) hView.findViewById(R.id.answersheet);
-        answer_sheet_view_helper.setHasFixedSize(true);
-        answer_sheet_view_helper.setLayoutManager(new GridLayoutManager(this,3));
-        answer_sheet_view_helper.addItemDecoration(new SpaceDecoration(2));
-        answerSheetHelperAdapter = new AnswerSheetHelperAdapter(this,Common.answerSheetList);
-        answer_sheet_view_helper.setAdapter(answerSheetHelperAdapter);
-
-        Button btn_done = hView.findViewById(R.id.btn_done);
-        btn_done.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isAnswerModeView) {
-                    new BottomDialog.Builder(QuestionActivity.this)
-                            .setTitle("Finished?")
-                            .setIcon(R.drawable.ic_mood_black_24dp)
-                            .setContent("Do you want to submit?")
-                            .setNegativeText("No...")
-                            .onNegative(new BottomDialog.ButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull BottomDialog bottomDialog) {
-                                    bottomDialog.dismiss();
-                                }
-                            })
-                            .setPositiveText("Yes!")
-                            .onPositive(new BottomDialog.ButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull BottomDialog bottomDialog) {
-                                    bottomDialog.dismiss();
-                                    finishGame();
-                                    drawer.closeDrawer(Gravity.LEFT);
-                                }
-                            }).show();
-                }
-                else
-                    finishGame();
-            }
-        });
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(gotoQuestionNum, new IntentFilter(Common.KEY_GO_TO_QUESTION));
 
         takeQuestion();     //taking questions from DB
 
@@ -149,22 +89,24 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
 
             txt_timer.setVisibility(View.VISIBLE);
             txt_right_answer.setVisibility(View.VISIBLE);
-
+            Common.right_answer_count = 0;
             txt_right_answer.setText((new StringBuilder(String.format("%d/%d",Common.right_answer_count,Common.questionList.size()))));
 
             countTimer();
 
+
             //answer sheet view
             answer_sheet_view = (RecyclerView) findViewById(R.id.grid_answer);
             answer_sheet_view.setHasFixedSize(true);
-            if(Common.questionList.size() > 5)      //separate into 2 rows  if the question list has more than 5 questions.
+            if(Common.questionList.size() > 5 && Common.questionList.size() < 12)      //separate into 2 rows  if the question list has more than 5 questions.
                 answer_sheet_view.setLayoutManager(new GridLayoutManager(this,Common.questionList.size()/2));
+            else if(Common.questionList.size() > 12)      //separate into 3 rows  if the question list has more than 5 questions.
+                answer_sheet_view.setLayoutManager(new GridLayoutManager(this,Common.questionList.size()/3));
             answerSheetAdapter = new AnswerSheetAdapter(this,Common.answerSheetList);
             answer_sheet_view.setAdapter(answerSheetAdapter);
 
 
             viewPager = (ViewPager) findViewById(R.id.viewpaper);
-
             tabLayout = (TabLayout) findViewById(R.id.sliding);
 
             getFragmentList();
@@ -173,8 +115,15 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                     1,
                     this,
                     Common.fragmentList);
+            viewPager.setOffscreenPageLimit(Common.questionList.size());
             viewPager.setAdapter(questionFragmentAdapter);
             tabLayout.setupWithViewPager(viewPager);
+
+            LinearLayout tabStrip = ((LinearLayout)tabLayout.getChildAt(0));
+            tabStrip.setEnabled(false);
+            for(int i = 0; i < Common.fragmentList.size(); i++) {
+                tabStrip.getChildAt(i).setClickable(false);
+            }
 
             //Event
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -184,6 +133,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                 int SCROLLING_UNDERTERMINED = 2;
 
                 int currentScrollingDirection = 2;
+
 
                 private void setScrollingDirection(float positionOffset) {
                     if ((1 - positionOffset) >= 0.5)
@@ -225,6 +175,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                         }
                         else {
                             questionFragment = Common.fragmentList.get(pos);
+
                         }
                     }
                     else {
@@ -236,7 +187,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                     CurrentQuestion question_state = questionFragment.getSelectedAnswer();
                     Common.answerSheetList.set(pos,question_state); //Set question answer for answersheet
                     answerSheetAdapter.notifyDataSetChanged();  //Change color in answer sheet
-                    answerSheetHelperAdapter.notifyDataSetChanged();
+
 
                     countCorrectAnswer();
 
@@ -258,31 +209,30 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                         this.currentScrollingDirection =SCROLLING_UNDERTERMINED;
                 }
             });
+            tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         }
-
-
 
     }
 
     private void finishGame() {
-        int pos = viewPager.getCurrentItem();
-        QuestionFragment questionFragment = Common.fragmentList.get(pos);
-        CurrentQuestion question_state = questionFragment.getSelectedAnswer();
-        Common.answerSheetList.set(pos,question_state); //Set question answer for answersheet
-        answerSheetAdapter.notifyDataSetChanged();  //Change color in answer sheet
-        answerSheetHelperAdapter.notifyDataSetChanged();
 
-        countCorrectAnswer();
+            int pos = viewPager.getCurrentItem();
+            QuestionFragment questionFragment = Common.fragmentList.get(pos);
+            CurrentQuestion question_state = questionFragment.getSelectedAnswer();
+            Common.answerSheetList.set(pos,question_state); //Set question answer for answersheet
+            answerSheetAdapter.notifyDataSetChanged();  //Change color in answer sheet
+            countCorrectAnswer();
 
-        txt_right_answer.setText(new StringBuilder(String.format("%d",Common.right_answer_count))
-                .append("/")
-                .append(String.format("%d",Common.questionList.size())).toString());
-        txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
+            txt_right_answer.setText(new StringBuilder(String.format("%d",Common.right_answer_count))
+                    .append("/")
+                    .append(String.format("%d",Common.questionList.size())).toString());
+            txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
 
-        if (question_state.getType() != Common.ANSWER_TYPE.NO_ANSWER) {
-            questionFragment.showCorrectAnswer();
-            questionFragment.disableAnswer();
-        }
+            if (question_state.getType() != Common.ANSWER_TYPE.NO_ANSWER) {
+                questionFragment.showCorrectAnswer();
+                questionFragment.disableAnswer();
+
+            }
 
         //Navigating to new Result Activity
         Intent intent = new Intent(QuestionActivity.this,ResultActivity.class);
@@ -295,9 +245,11 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void countCorrectAnswer() {
-        //Reset variable
-        Common.right_answer_count = Common.wrong_answer_count = 0;
-        
+        if (Common.fragmentList.size()>0) {
+            Common.right_answer_count = 0;
+            Common.wrong_answer_count = 0;
+        }
+
         for (CurrentQuestion item:Common.answerSheetList)
             if (item.getType() == Common.ANSWER_TYPE.RIGHT_ANSWER)
                 Common.right_answer_count++;
@@ -308,6 +260,8 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
 
     //Generating question fragment base on number of item in QuestionList
     private void getFragmentList() {
+        if (Common.fragmentList.size()>0)
+            Common.fragmentList.clear();
         for (int i = 0; i<Common.questionList.size(); i++) {
             Bundle bundle = new Bundle();
             bundle.putInt("index",i);
@@ -351,7 +305,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
 
                 @Override
                 public void onFinish() {
-                    //Finish Game
+                    finishGame();
                 }
             }.start();
         }
@@ -399,7 +353,8 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
         MenuItem item = menu.findItem(R.id.menu_wrong_answer);
         ConstraintLayout constraintLayout = (ConstraintLayout) item.getActionView();
         txt_wrong_answer = (TextView)constraintLayout.findViewById(R.id.txt_wrong_answer);
-        txt_wrong_answer.setText(String.valueOf(0));
+        Common.wrong_answer_count = 0;
+        txt_wrong_answer.setText(String.valueOf(Common.wrong_answer_count));
 
         return true;
     }
@@ -421,14 +376,13 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        int id = item.getItemId();
-
-        if (id == R.id.menu_finish_game) {
-            if (!isAnswerModeView) {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
                 new BottomDialog.Builder(this)
-                        .setTitle("Finished?")
+                        .setTitle("Do you wanna quit?")
                         .setIcon(R.drawable.ic_mood_black_24dp)
-                        .setContent("Do you want to submit?")
+                        .setContent("All data will be deleted!")
                         .setNegativeText("No...")
                         .onNegative(new BottomDialog.ButtonCallback() {
                             @Override
@@ -441,15 +395,16 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                             @Override
                             public void onClick(@NonNull BottomDialog bottomDialog) {
                                 bottomDialog.dismiss();
-                                finishGame();
+                                Intent intent = new Intent(getApplicationContext(),Homepage.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //Delete all activity
+                                startActivity(intent);
                             }
                         }).show();
+                break;
             }
-            else
-                finishGame();
+
             return true;
-        }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -468,6 +423,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                     txt_wrong_answer.setVisibility(View.GONE);
                     txt_right_answer.setVisibility(View.GONE);
                     txt_timer.setVisibility(View.GONE);
+                    Common.fragmentList.get(questionNum).disableAnswer();
                 }
                 else {
                     if (action.equals("viewquizanswer")) {
@@ -484,23 +440,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                             Common.fragmentList.get(i).disableAnswer();
                         }
                     }
-                    else if (action.equals("doitagain")) {
-                        viewPager.setCurrentItem(0);
 
-                        isAnswerModeView = false;
-                        countTimer();
-                        txt_wrong_answer.setVisibility(View.VISIBLE);
-                        txt_right_answer.setVisibility(View.VISIBLE);
-                        txt_timer.setVisibility(View.VISIBLE);
-
-                        for (CurrentQuestion item:Common.answerSheetList)
-                            item.setType(Common.ANSWER_TYPE.NO_ANSWER);     //Reset all question
-                        answerSheetAdapter.notifyDataSetChanged();
-                        answerSheetHelperAdapter.notifyDataSetChanged();
-
-                        for (int i = 0;i < Common.fragmentList.size();i++)
-                            Common.fragmentList.get(i).resetQuestion();
-                    }
                 }
             }
         }

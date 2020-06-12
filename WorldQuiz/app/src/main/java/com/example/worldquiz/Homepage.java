@@ -26,9 +26,7 @@ import com.example.worldquiz.Adapter.CategoryAdapter;
 import com.example.worldquiz.Common.Common;
 import com.example.worldquiz.Common.SpaceDecoration;
 import com.example.worldquiz.DBHelper.DBHelper;
-
-
-
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class Homepage extends AppCompatActivity {
@@ -46,12 +44,22 @@ public class Homepage extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_settings)
-        {
-            Intent intent = new Intent(Homepage.this,ProfileActivity.class);
-            startActivity(intent);
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                Intent intent = new Intent(Homepage.this,ProfileActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_scoreboard:
+                Intent intent1 = new Intent(Homepage.this,RankingActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.menu_signout:
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                startActivity(new Intent(this, MainActivity.class));
+                break;
         }
-        return true;
+       return true;
     }
 
 

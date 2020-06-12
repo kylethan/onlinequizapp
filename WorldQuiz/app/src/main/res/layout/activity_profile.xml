@@ -51,7 +51,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="8dp"
+            android:layout_marginTop="20dp">
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/udName"
                 android:layout_width="match_parent"
@@ -112,7 +113,7 @@
             android:layout_height="wrap_content"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_gravity="center"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="60dp"
             android:text="Update"/>
 
 

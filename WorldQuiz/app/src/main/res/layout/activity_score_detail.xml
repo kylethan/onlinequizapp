@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/border_bg"
+    android:orientation="vertical"
     tools:context=".ScoreDetail">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_category_sb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme.AppBarOverLay"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="13dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/quiz" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Scoreboard"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
+
+    </RelativeLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/title"
@@ -25,7 +59,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="Name"
+                android:text="Category Name"
                 android:textSize="24dp"
                 android:textColor="@android:color/white"
                 android:layout_marginLeft="5dp"
@@ -51,4 +85,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
 
-</RelativeLayout>
+</LinearLayout>

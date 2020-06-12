@@ -9,20 +9,19 @@
         <menu>
             <item
                 android:id="@+id/menu_settings"
-                android:icon="@drawable/ic_baseline_account_circle_24"
-                android:title="Your Profile"/>
+                android:icon="@drawable/ic_baseline_account_box_24"
+                android:title="Your Profile" />
             <item
                 android:id="@+id/menu_scoreboard"
-                android:icon="@drawable/ic_baseline_score_24"
-                android:title="Scoreboard"/>
+                android:icon="@android:drawable/btn_star_big_on"
+                android:title="Scoreboard" />
             <item
                 android:id="@+id/menu_signout"
-                android:icon="@drawable/ic_baseline_power_settings_new_24"
+                android:icon="@android:drawable/ic_delete"
                 android:title="Sign Out"/>
 
         </menu>
     </item>
-
 
 
 </menu>

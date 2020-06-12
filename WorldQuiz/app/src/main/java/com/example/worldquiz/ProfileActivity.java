@@ -2,9 +2,12 @@ package com.example.worldquiz;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -29,9 +32,9 @@ import org.w3c.dom.Text;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    Toolbar toolbar;
     MaterialEditText udName;
     TextView udUserName, udEmail;
-    ProgressBar udprogressBar;
     Button udButton;
     ProgressBar progressBar;
 
@@ -43,6 +46,12 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        toolbar = findViewById(R.id.toolbarud);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         database = FirebaseDatabase.getInstance();
         users = database.getReference("Users");
@@ -72,20 +81,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void updateProfile(final String name) {
         if (name.isEmpty()) {
-            udName.setError("Username required");
+            udName.setError("Name required");
             udName.requestFocus();
             return;
         }
         else {
             users.child(Common.currentUser.getUserName()).child("name").setValue(name);
             ranking.child(Common.currentUser.getUserName()).child("name").setValue(name);
-            score.orderByChild("UserName").equalTo(name)
+            score.orderByChild("userName").equalTo(Common.currentUser.getUserName())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot data:dataSnapshot.getChildren()) {
-                                Score score = data.getValue(Score.class);
-                                score.setUser(name);
+                                String key = data.getKey();
+                                score.child(key).child("user").setValue(name);
                             }
 
 
@@ -114,7 +123,24 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(ProfileActivity.this,"Update Successfully!", Toast.LENGTH_SHORT).show();
         }
 
-
-
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.scoreboard_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(getApplicationContext(), Homepage.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //Delete all activity
+                startActivity(intent);
+                break;
+
+        }
+        return true;
+    }
+
 }

@@ -76,7 +76,7 @@ public class ResultGridAdapter extends RecyclerView.Adapter<ResultGridAdapter.My
                 public void onClick(View v) {
                     //get back to QuestionActivity to show question
                     LocalBroadcastManager.getInstance(context)
-                            .sendBroadcast(new Intent(Common.KEY_BACK_FROM_RESULT).putExtra(Common.KEY_GO_TO_QUESTION,
+                            .sendBroadcast(new Intent(Common.KEY_BACK_FROM_RESULT).putExtra(Common.KEY_BACK_FROM_RESULT,
                                     currentQuestionList.get(getAdapterPosition()).getQuestionIndex()));
                 }
             });

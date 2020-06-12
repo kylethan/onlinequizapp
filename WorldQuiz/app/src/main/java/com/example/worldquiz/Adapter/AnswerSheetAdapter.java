@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +34,7 @@ public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
+        holder.txt_question_number.setText(String.valueOf(position+1));
         if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.RIGHT_ANSWER)
             holder.question_item.setBackgroundResource(R.drawable.grid_question_right_answer);
         else if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.WRONG_ANSWER)
@@ -50,10 +51,14 @@ public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         View question_item;
+        TextView txt_question_number;
+
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             question_item = itemView.findViewById(R.id.question_item);
+            txt_question_number = itemView.findViewById(R.id.txt_question_number);
         }
 
     }

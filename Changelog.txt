@@ -90,3 +90,10 @@ SIT305 Assignment 2 - World Quiz
 - Adding user profile and be able to update the name, user's name will be automatically update on scoreboard. 
 - Adding signing out function for firebase account
 - Editing some UI/UX layout.
+
+12/06/2020
+- Fixing updating name for user: now all categories' score will follow to the new name. 
+- Fixing Do Again function: deleted all checkbox state.
+- Fixing the answer box in Result Activity: now it will be go to that question directly using broadcaster
+- Deleting redundant grid answer layout on navigation view in question activity, now all the question number will display on grid answer sheet and Tab layout. 
+- Turning off tab layout clickable to enable the "get answer" of the app: Tab layout now can only show the question number but can not help the user move to that question to maintain the function of the game. 

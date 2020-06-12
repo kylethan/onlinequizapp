@@ -140,49 +140,63 @@ public class QuestionFragment extends Fragment implements IQuestion {
 
     @Override
     public CurrentQuestion getSelectedAnswer() {
-        //This function will return state of answer: right, wrong and non-answer
-        CurrentQuestion currentQuestion = new CurrentQuestion(questionIndex,Common.ANSWER_TYPE.NO_ANSWER);  //Default no answer
-        StringBuilder result = new StringBuilder();
-        if (Common.selected_values.size() > 1) {
-            //If multi choice then split answer to array
-            //Example: arr[0] = A. Melbourne; arr[1] = B. Sydney
-            Object[] arrayAnswer = Common.selected_values.toArray();
-            for (int i=0; i<arrayAnswer.length;i++)
-                //Take first letter of Answer - Example: arr[0] = A. Melbourne, we will take letter 'A'
-                if (i<arrayAnswer.length-1)
-                    result.append(new StringBuilder(((String)arrayAnswer[i]).substring(0,1)).append(","));    //
-                else
-                    result.append(new StringBuilder((String)arrayAnswer[i]).substring(0,1));
-            }
-        else if (Common.selected_values.size() == 1) {
-            //if only one choice
-            Object[] arrayAnswer = Common.selected_values.toArray();
-            result.append(((String)arrayAnswer[0]).substring(0,1));
 
-        }
-        if (question != null) {
-            //Compare user answer with correct answer
-            if (!TextUtils.isEmpty(result))
+        if (Common.answerSheetList.get(questionIndex).getType() == Common.ANSWER_TYPE.NO_ANSWER) {
+            //This function will return state of answer: right, wrong and non-answer
+            CurrentQuestion currentQuestion = new CurrentQuestion(questionIndex, Common.ANSWER_TYPE.NO_ANSWER);  //Default no answer
+            StringBuilder result = new StringBuilder();
+            if (Common.selected_values.size() > 1) {
+                //If multi choice then split answer to array
+                //Example: arr[0] = A. Melbourne; arr[1] = B. Sydney
+                Object[] arrayAnswer = Common.selected_values.toArray();
+                for (int i=0; i<arrayAnswer.length;i++)
+                    //Take first letter of Answer - Example: arr[0] = A. Melbourne, we will take letter 'A'
+                    if (i<arrayAnswer.length-1)
+                        result.append(new StringBuilder(((String)arrayAnswer[i]).substring(0,1)).append(","));    //
+                    else
+                        result.append(new StringBuilder((String)arrayAnswer[i]).substring(0,1));
+            }
+            else if (Common.selected_values.size() == 1) {
+                //if only one choice
+                Object[] arrayAnswer = Common.selected_values.toArray();
+                result.append(((String)arrayAnswer[0]).substring(0,1));
+
+            }
+            if (question != null) {
+                //Compare user answer with correct answer
+                if (!TextUtils.isEmpty(result))
                 {
                     if (result.toString().equals(question.getCorrectAnswer()))
                     {
                         currentQuestion.setType(Common.ANSWER_TYPE.RIGHT_ANSWER);
+                        Common.currentQuestion = currentQuestion;
                     }
 
-                    else
+                    else{
                         currentQuestion.setType(Common.ANSWER_TYPE.WRONG_ANSWER);
+                        Common.currentQuestion = currentQuestion;
+                    }
+
                 }
-            else
+                else
+                {
+                    currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
+                    Common.currentQuestion = currentQuestion;
+                }
+
+
+
+            }
+            else {
+                Toast.makeText(getContext(), "Cannot get question", Toast.LENGTH_SHORT).show();
                 currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
-
-
+            }
+            Common.selected_values.clear();//always clear selected_value when compare done
+            return currentQuestion;
         }
-        else {
-            Toast.makeText(getContext(), "Cannot get question", Toast.LENGTH_SHORT).show();
-            currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
-        }
-        Common.selected_values.clear();//always clear selected_value when compare done
-        return currentQuestion;
+        else
+            return Common.answerSheetList.get(questionIndex);
+
     }
 
     @Override
@@ -224,16 +238,25 @@ public class QuestionFragment extends Fragment implements IQuestion {
     public void resetQuestion() {
 
         //Enable Checkbox
+
         ckbA.setEnabled(true);
         ckbB.setEnabled(true);
         ckbC.setEnabled(true);
         ckbD.setEnabled(true);
 
         //Remove all selected
-        ckbA.setChecked(false);
-        ckbB.setChecked(false);
-        ckbC.setChecked(false);
-        ckbD.setChecked(false);
+        if (ckbA.isChecked()) {
+            ckbA.setChecked(false);
+        }
+        if (ckbB.isChecked()) {
+            ckbB.setChecked(false);
+        }
+        if (ckbC.isChecked()) {
+            ckbC.setChecked(false);
+        }
+        if (ckbD.isChecked()) {
+            ckbD.setChecked(false);
+        }
 
         //Remove all bold on text
         ckbA.setTypeface(null, Typeface.NORMAL);
