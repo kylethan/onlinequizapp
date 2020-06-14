@@ -15,19 +15,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.example.worldquiz.Adapter.RankingAdapter;
 import com.example.worldquiz.Common.Common;
 import com.example.worldquiz.Interface.ItemClickListener;
 import com.example.worldquiz.Interface.RankingCallback;
+import com.example.worldquiz.Model.ProfileImage;
 import com.example.worldquiz.Model.Ranking;
 import com.example.worldquiz.Model.Score;
+import com.example.worldquiz.user.User;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RankingActivity extends AppCompatActivity {
 
@@ -38,6 +47,7 @@ public class RankingActivity extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference score,rankingtable;
+
 
     int sum = 0;
 
@@ -52,6 +62,7 @@ public class RankingActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+
         rankingList = (RecyclerView) findViewById(R.id.rankingList);
         layoutManager = new LinearLayoutManager(this);
         rankingList.setHasFixedSize(true);
@@ -63,6 +74,7 @@ public class RankingActivity extends AppCompatActivity {
         score = database.getReference("Score");
         rankingtable = database.getReference("Ranking");
 
+
         updateScore(Common.currentUser.getUserName(), new RankingCallback<Ranking>() {
             @Override
             public void callBack(Ranking ranking) {
@@ -73,19 +85,33 @@ public class RankingActivity extends AppCompatActivity {
             }
         });
 
-        //Setting adapter
+
 
         adapter = new FirebaseRecyclerAdapter<Ranking, RankingAdapter>(
                 Ranking.class,
                 R.layout.layout_ranking,
                 RankingAdapter.class,
-                rankingtable.orderByChild("score")
+                rankingtable.orderByChild("score").limitToLast(6)
         ) {
             @Override
-            protected void populateViewHolder(RankingAdapter rankingAdapter, final Ranking ranking, int i) {
+            protected void populateViewHolder(final RankingAdapter rankingAdapter, final Ranking ranking, int i) {
+
+                Picasso.get().load(ranking.getProfileImage()).into(rankingAdapter.imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        rankingAdapter.progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+                int realRank = 6 - rankingAdapter.getAdapterPosition();
+                rankingAdapter.txt_ranking.setText(String.valueOf(realRank));
+
                 rankingAdapter.txt_name.setText(ranking.getName());
                 rankingAdapter.txt_score.setText(String.valueOf(ranking.getScore()));
-
 
                 //avoid crashing when clicked
                 rankingAdapter.setItemClickListener(new ItemClickListener() {
@@ -113,6 +139,8 @@ public class RankingActivity extends AppCompatActivity {
                         for (DataSnapshot data:dataSnapshot.getChildren()) {
                             Ranking local = data.getValue(Ranking.class);
                             Log.d("DEBUG",local.getName());
+
+
                         }
                     }
 
@@ -133,11 +161,11 @@ public class RankingActivity extends AppCompatActivity {
                         for (DataSnapshot data:dataSnapshot.getChildren()) {
                             Score score = data.getValue(Score.class);
                             sum+=Integer.parseInt(score.getScore());
+
                         }
 
                         //After summary all score, processing sum variable on Firebase
-
-                        Ranking ranking = new Ranking(Common.currentUser.getName(),sum);
+                        Ranking ranking = new Ranking(Common.currentUser.getName(),sum,Common.rankingimage.getProfileImage());
                         callback.callBack(ranking);
                     }
 
@@ -158,6 +186,7 @@ public class RankingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                finish();
                 Intent intent = new Intent(getApplicationContext(), Homepage.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //Delete all activity
                 startActivity(intent);

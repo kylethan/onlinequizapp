@@ -9,12 +9,14 @@
         android:layout_margin="16dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <FrameLayout
             android:id="@+id/layout_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="200dp"
+            android:background="@drawable/border_bg_white">
 
             <ImageView
                 android:id="@+id/image_question"
@@ -35,31 +37,62 @@
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bg_white"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp">
+            <CheckBox
+                android:id="@+id/ckbA"
+                android:text="Answer A"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"/>
+        </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/ckbA"
-            android:text="Answer A"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bg_white"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp">
+            <CheckBox
+                android:id="@+id/ckbB"
+                android:text="Answer B"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bg_white"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp">
+            <CheckBox
+                android:id="@+id/ckbC"
+                android:text="Answer C"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_bg_white"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp">
+            <CheckBox
+                android:id="@+id/ckbD"
+                android:text="Answer D"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"/>
+        </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/ckbB"
-            android:text="Answer B"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <CheckBox
-            android:id="@+id/ckbC"
-            android:text="Answer C"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <CheckBox
-            android:id="@+id/ckbD"
-            android:text="Answer D"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 </FrameLayout>

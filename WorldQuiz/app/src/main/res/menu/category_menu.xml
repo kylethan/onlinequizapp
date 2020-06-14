@@ -2,26 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-    <item android:id="@+id/notification_background"
-        android:title=""
-        android:icon="@drawable/ic_settings_white_24dp"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/menu_settings"
-                android:icon="@drawable/ic_baseline_account_box_24"
-                android:title="Your Profile" />
-            <item
-                android:id="@+id/menu_scoreboard"
-                android:icon="@android:drawable/btn_star_big_on"
-                android:title="Scoreboard" />
-            <item
-                android:id="@+id/menu_signout"
-                android:icon="@android:drawable/ic_delete"
-                android:title="Sign Out"/>
 
-        </menu>
-    </item>
 
 
 </menu>

@@ -97,3 +97,12 @@ SIT305 Assignment 2 - World Quiz
 - Fixing the answer box in Result Activity: now it will be go to that question directly using broadcaster
 - Deleting redundant grid answer layout on navigation view in question activity, now all the question number will display on grid answer sheet and Tab layout. 
 - Turning off tab layout clickable to enable the "get answer" of the app: Tab layout now can only show the question number but can not help the user move to that question to maintain the function of the game. 
+
+13/06/2020
+- Creating Forget Password function: player can reset their password with their email or username
+- Adding user photo image features: player can change their profile image on User Profile Activity and it will be shown on Homepage and Ranking Scoreboard
+- Editing some UI such as homepage, ranking,...
+
+14/06/2020
+- Fixing some profile Image problem that only be seen by current user: now all user can see their competitors' images
+- Editing some UI such as Score Detail and homepage,etc

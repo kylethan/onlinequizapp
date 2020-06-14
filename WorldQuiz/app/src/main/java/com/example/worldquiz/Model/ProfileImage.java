@@ -1,17 +1,13 @@
 package com.example.worldquiz.Model;
 
-public class Ranking {
+public class ProfileImage {
     private String name;
-    private long score;
     private String profileImage;
 
-    public Ranking() {
+    public ProfileImage(){}
 
-    }
-
-    public Ranking(String name, long score, String profileImage) {
+    public ProfileImage(String name, String profileImage) {
         this.name = name;
-        this.score = score;
         this.profileImage = profileImage;
     }
 
@@ -21,14 +17,6 @@ public class Ranking {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public long getScore() {
-        return score;
-    }
-
-    public void setScore(long score) {
-        this.score = score;
     }
 
     public String getProfileImage() {

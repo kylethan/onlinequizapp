@@ -15,7 +15,7 @@
         <activity android:name=".ScoreDetail" />
         <activity android:name=".RankingActivity" />
         <activity android:name=".ResultActivity" />
-        <activity android:name=".Adapter.AnswerSheetHelperAdapter" />
+
         <activity
             android:name=".QuestionActivity"
             android:label="@string/title_activity_question"

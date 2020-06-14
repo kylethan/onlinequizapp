@@ -98,7 +98,7 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
             //answer sheet view
             answer_sheet_view = (RecyclerView) findViewById(R.id.grid_answer);
             answer_sheet_view.setHasFixedSize(true);
-            if(Common.questionList.size() > 5 && Common.questionList.size() < 12)      //separate into 2 rows  if the question list has more than 5 questions.
+            if(Common.questionList.size() > 5 && Common.questionList.size() <= 12)      //separate into 2 rows  if the question list has more than 5 questions.
                 answer_sheet_view.setLayoutManager(new GridLayoutManager(this,Common.questionList.size()/2));
             else if(Common.questionList.size() > 12)      //separate into 3 rows  if the question list has more than 5 questions.
                 answer_sheet_view.setLayoutManager(new GridLayoutManager(this,Common.questionList.size()/3));
@@ -401,6 +401,30 @@ public class QuestionActivity extends AppCompatActivity implements NavigationVie
                             }
                         }).show();
                 break;
+            case R.id.menu_finish_game:
+                    if (!isAnswerModeView) {
+                        new BottomDialog.Builder(this)
+                                .setTitle("Finished?")
+                                .setIcon(R.drawable.ic_mood_black_24dp)
+                                .setContent("Do you want to submit?")
+                                .setNegativeText("No...")
+                                .onNegative(new BottomDialog.ButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull BottomDialog bottomDialog) {
+                                        bottomDialog.dismiss();
+                                    }
+                                })
+                                .setPositiveText("Yes!")
+                                .onPositive(new BottomDialog.ButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull BottomDialog bottomDialog) {
+                                        bottomDialog.dismiss();
+                                        finishGame();
+                                    }
+                                }).show();
+                    }
+                    else
+                        finishGame();
             }
 
             return true;

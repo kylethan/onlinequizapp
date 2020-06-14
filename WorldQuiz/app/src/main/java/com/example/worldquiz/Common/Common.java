@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import com.example.worldquiz.Model.Category;
 import com.example.worldquiz.Model.CurrentQuestion;
 import com.example.worldquiz.Model.Question;
+import com.example.worldquiz.Model.Ranking;
 import com.example.worldquiz.QuestionFragment;
 import com.example.worldquiz.user.User;
 
@@ -31,7 +32,9 @@ public class Common {
     public static TreeSet<String> selected_values = new TreeSet<>();
     public static User currentUser;
     public static CurrentQuestion currentQuestion;
-
+    public static String imageurl ="https://firebasestorage.googleapis.com/v0/b/onlinequizapp-871e0.appspot.com/o/uploads?alt=media&token=891f83a2-10e4-4916-b071-deabbbb0fcd2";
+    public static Ranking rankingimage;
+    public static String currentimage= "https://firebasestorage.googleapis.com/v0/b/onlinequizapp-871e0.appspot.com/o/uploads?alt=media&token=891f83a2-10e4-4916-b071-deabbbb0fcd2";
 
 
     public enum ANSWER_TYPE{
