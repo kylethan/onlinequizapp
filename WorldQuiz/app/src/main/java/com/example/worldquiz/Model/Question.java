@@ -1,6 +1,6 @@
 package com.example.worldquiz.Model;
 
-public class Question {
+public class Question {             //Question model to get question
     private int id;
     private String questionText,questionImage,answerA,answerB,answerC,answerD,correctAnswer;
     private boolean isImageQuestion;

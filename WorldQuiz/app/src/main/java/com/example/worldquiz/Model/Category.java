@@ -1,6 +1,6 @@
 package com.example.worldquiz.Model;
 
-public class Category {
+public class Category {                             //category Model
     private int id;
     private String name,image;
 

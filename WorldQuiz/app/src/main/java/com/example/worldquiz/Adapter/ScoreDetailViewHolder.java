@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.worldquiz.R;
 
-public class ScoreDetailViewHolder extends RecyclerView.ViewHolder {
+public class ScoreDetailViewHolder extends RecyclerView.ViewHolder {        //Score Detail Adapter
     public TextView txt_cname,txt_cscore;
 
     public ScoreDetailViewHolder(@NonNull View itemView) {

@@ -1,6 +1,6 @@
 package com.example.worldquiz.Model;
 
-public class Score {
+public class Score {                    //Score model to upload data to Score path
     private String Question_score;
     private String User;
     private String Score;

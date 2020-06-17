@@ -5,50 +5,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ScoreDetail">
+    tools:context=".ScoreDetail"
+    android:background="@drawable/galaxy_bg">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_category_sb"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/AppTheme.AppBarOverLay"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
+        android:background="@drawable/star_bg1">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_marginTop="13dp"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/quiz" />
-    </androidx.appcompat.widget.Toolbar>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_category_sb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:padding="10dp">
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/AppTheme.AppBarOverLay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="2dp"
+                app:srcCompat="@drawable/quiz" />
+        </androidx.appcompat.widget.Toolbar>
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:text="Scoreboard"
+            android:text="Leaderboard"
             android:textColor="#FFFFFF"
+            android:textSize="25sp"
             android:textStyle="bold"
-            android:textSize="25sp"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar_category_sb" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/title"
         android:padding="16dp"
-        android:layout_margin="16dp"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/cardview_dark_background"
-        app:cardElevation="4dp">
+        app:cardElevation="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
 
         <LinearLayout
             android:orientation="horizontal"

@@ -22,10 +22,14 @@ import android.widget.TextView;
 import com.example.worldquiz.Adapter.ResultGridAdapter;
 import com.example.worldquiz.Common.Common;
 import com.example.worldquiz.Common.SpaceDecoration;
+import com.example.worldquiz.Model.Ranking;
 import com.example.worldquiz.Model.Score;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,9 +44,11 @@ public class ResultActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference score;
 
+    int sum = 0;
+
     BroadcastReceiver backToQuestion = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, Intent intent) {                     //using broadcast receiver to get back to the specific question when click to a Result Grid item (ResultGridAdapter)
             if (intent.getAction().toString().equals(Common.KEY_BACK_FROM_RESULT)) {
                 int question = intent.getIntExtra(Common.KEY_BACK_FROM_RESULT,-1);
                 goBackActivityWithQuestion(question);
@@ -51,7 +57,7 @@ public class ResultActivity extends AppCompatActivity {
 
 
     };
-    private void goBackActivityWithQuestion(int question) {
+    private void goBackActivityWithQuestion(int question) { //go back to Question Activity with a key - KEY_BACK_FROM_RESULT to specify to a question fragment
         Intent returnIntent = new Intent();
         returnIntent.putExtra(Common.KEY_BACK_FROM_RESULT,question);
         setResult(Activity.RESULT_OK,returnIntent);
@@ -63,7 +69,7 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        LocalBroadcastManager.getInstance(this)
+        LocalBroadcastManager.getInstance(this)         //declare Broadcast Manager
                 .registerReceiver(backToQuestion, new IntentFilter(Common.KEY_BACK_FROM_RESULT));
 
         toolbar = (Toolbar) findViewById(R.id.toolbar3);
@@ -85,24 +91,28 @@ public class ResultActivity extends AppCompatActivity {
 
         recyclerView_result = (RecyclerView) findViewById(R.id.recycler_result);
         recyclerView_result.setHasFixedSize(true);
-        recyclerView_result.setLayoutManager(new GridLayoutManager(this,3));
+        recyclerView_result.setLayoutManager(new GridLayoutManager(this,4));
 
         //Setting Adapter
         adapter = new ResultGridAdapter(this,Common.answerSheetList);
         recyclerView_result.addItemDecoration(new SpaceDecoration(4));
         recyclerView_result.setAdapter(adapter);
 
+
+        //Calculate the time player used to finish the game
         txt_timer.setText(String.format("%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(Common.timer),
                 TimeUnit.MILLISECONDS.toSeconds(Common.timer) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Common.timer))));
 
+        //Calculate score
         int totalscore = Common.right_answer_count*10;
         txt_score.setText(new StringBuilder("").append(totalscore));
 
         txt_right_answer.setText(new StringBuilder("").append(Common.right_answer_count).append("/")
         .append(Common.questionList.size()));
 
+        //set text on buttons
         btn_filter_total.setText(new StringBuilder("").append(Common.questionList.size()));
         btn_filter_right.setText(new StringBuilder("").append(Common.right_answer_count));
         btn_filter_wrong.setText(new StringBuilder("").append(Common.wrong_answer_count));
@@ -122,7 +132,7 @@ public class ResultActivity extends AppCompatActivity {
         //Setting filter button event showing related result list such as total, right, wrong, and no answers
         btn_filter_total.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {                           //showing all answer grid items
                 if (adapter == null) {
                     adapter = new ResultGridAdapter(ResultActivity.this,Common.answerSheetList);
                     recyclerView_result.setAdapter(adapter);
@@ -134,7 +144,7 @@ public class ResultActivity extends AppCompatActivity {
 
         btn_filter_no_answer.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {                       //showing all non-answer grid items
                 Common.answerSheetListFiltered.clear();
                 for (int i = 0; i < Common.answerSheetList.size(); i++) {
                     if (Common.answerSheetList.get(i).getType() == Common.ANSWER_TYPE.NO_ANSWER)
@@ -147,7 +157,7 @@ public class ResultActivity extends AppCompatActivity {
 
         btn_filter_wrong.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {                           //showing all wrong-answer grid items
                 Common.answerSheetListFiltered.clear();
                 for (int i = 0; i < Common.answerSheetList.size(); i++) {
                     if (Common.answerSheetList.get(i).getType() == Common.ANSWER_TYPE.WRONG_ANSWER)
@@ -160,7 +170,7 @@ public class ResultActivity extends AppCompatActivity {
 
         btn_filter_right.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {                           //showing all right-answer grid items
                 Common.answerSheetListFiltered.clear();
                 for (int i = 0; i < Common.answerSheetList.size(); i++) {
                     if (Common.answerSheetList.get(i).getType() == Common.ANSWER_TYPE.RIGHT_ANSWER)
@@ -171,15 +181,43 @@ public class ResultActivity extends AppCompatActivity {
             }
         });
         database = FirebaseDatabase.getInstance();
-        score = database.getReference("Score");
+        score = database.getReference("Score");     //getting Score path on database
 
-        score.child(String.format("%s_%s",Common.currentUser.getUserName(),Common.selectedCategory.getId()))
+
+        score.child(String.format("%s_%s",Common.currentUser.getUserName(),Common.selectedCategory.getId()))        //Create data named by user's username and Category ID and set all the data archieved
                 .setValue(new Score(String.format("%s_%s",Common.currentUser.getUserName(),Common.selectedCategory.getId()),
                         Common.currentUser.getName(),
                         String.valueOf(totalscore),
                         String.valueOf(Common.selectedCategory.getId()),
                         Common.selectedCategory.getName(),
                         Common.currentUser.getUserName()));
+
+        score.orderByChild("userName").equalTo(Common.currentUser.getUserName())        //find the user base on user's username
+                .addListenerForSingleValueEvent(new ValueEventListener() {      //getting every score in each category stored on Database and sum it)
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data:dataSnapshot.getChildren()) {
+                            Score score = data.getValue(Score.class);
+                            sum+=Integer.parseInt(score.getScore());
+
+                        }
+                        //After summary all score, processing sum variable on Firebase
+                        Ranking ranking = new Ranking(Common.currentUser.getName(),sum,Common.rankingimage.getProfileImage());
+                        Common.rankingimage = ranking;      //save this one to display the new total score immediately
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(),Homepage.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //Delete all activity
+        startActivity(intent);
     }
 
     @Override
@@ -190,38 +228,51 @@ public class ResultActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId())
+        switch (item.getItemId())       //getting back to homepage
         {
-            case R.id.menu_do_quiz_again:
-                doQuizAgain();
-                break;
-            case R.id.menu_view_answer:
-                viewQuizAnswer();
-                break;
-            case R.id.menu_show_result:
-                Intent intent1 = new Intent(ResultActivity.this,RankingActivity.class);
-                startActivity(intent1);
-                break;
-
             case android.R.id.home:
                 Intent intent = new Intent(getApplicationContext(),Homepage.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);    //Delete all activity
                 startActivity(intent);
-                break;
-
         }
-
         return true;
     }
 
-    private void viewQuizAnswer() {
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("action","viewquizanswer");
-        setResult(Activity.RESULT_OK,returnIntent);
-        finish();
+
+
+    public void Scoreboard(View view) {         //go to Ranking Activity
+        Intent intent1 = new Intent(ResultActivity.this,RankingActivity.class);
+        startActivity(intent1);
     }
 
-    private void doQuizAgain() {
+    public void ViewAnswer(View view) {     //return to Question activity with a value to do specific function (which is view all answers)
+
+        new BottomDialog.Builder(ResultActivity.this)
+                .setTitle("View all answers?")
+                .setIcon(R.drawable.ic_mood_black_24dp)
+                .setContent("Are you sure that you want to see all the results...?")
+                .setNegativeText("No...")
+                .onNegative(new BottomDialog.ButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull BottomDialog bottomDialog) {
+                        bottomDialog.dismiss();
+                    }
+                })
+                .setPositiveText("Yes!")
+                .onPositive(new BottomDialog.ButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull BottomDialog bottomDialog) {
+                        bottomDialog.dismiss();
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("action","viewquizanswer");
+                        setResult(Activity.RESULT_OK,returnIntent);
+                        finish();
+                    }
+                }).show();
+
+    }
+
+    public void DoAgain(View view) {        //open dialog to ask if user want to do it again
         new BottomDialog.Builder(ResultActivity.this)
                 .setTitle("Do quiz again?")
                 .setIcon(R.drawable.ic_mood_black_24dp)

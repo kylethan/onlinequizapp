@@ -1,0 +1,43 @@
+Icon: Free license from Flaticon.com:
+	quiz.png
+	animal.png
+	geography.png
+	music.png
+	doagain.png
+	sports.png
+	history.png
+	nature.png
+	film.png
+	technology.png
+	math.png
+	science.png
+	cuisine.png
+	economy.png
+	viewanswer.png
+	profile.png
+	question.png
+	ranking.png
+	share.png
+	signout.png
+	star.png
+Background: Free license from Freepik.com
+	galaxy_bg.jpg
+	star_bg1.jpg
+	star_main.jpg
+Questions:
+	Nature https://www.q4quiz.com/online-quizzes-and-answer-in-english-latest-general-knowledge-gk-quiz-with-answers/
+
+	Film - https://www.q4quiz.com/celebrities-tv-series-movies-quiz-questions-with-answers/
+		https://pubquizquestionshq.com/quiz/2020-movies-quiz-round-1
+		https://www.jetpunk.com/quizzes/movie-multiple-choice
+	Technology - https://www.indiabix.com/general-knowledge/technology/014009
+			https://www.q4quiz.com/learn-more-about-computer-and-its-technology-technology-quiz-questions-answers/
+	animal -https://www.q4quiz.com/100-animals-questions-with-answers/
+
+	music - https://www.q4quiz.com/music-trivia-quiz-questions-and-answers/
+
+	sports - https://www.q4quiz.com/50-sports-general-knowledge-online-quiz-questions-with-answers/
+
+	history - https://www.q4quiz.com/ancient-history-general-knowledge-quiz-history-quiz-questions-and-answers-part-6/
+
+			https://www.q4quiz.com/history-general-knowledge-cold-war-quiz-questions-with-answers/

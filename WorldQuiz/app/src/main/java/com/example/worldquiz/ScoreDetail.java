@@ -50,16 +50,16 @@ public class ScoreDetail extends AppCompatActivity {
         scoreList = (RecyclerView) findViewById(R.id.scoreList);
         scoreList.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
-        scoreList.setLayoutManager(layoutManager);
+        scoreList.setLayoutManager(layoutManager);          //setting layout
 
 
-
+        //getting value base on name
         if (getIntent()!=null)
             viewUser=getIntent().getStringExtra("viewUser");
         if (!viewUser.isEmpty())
             loadScoreDetail(viewUser);
     }
-
+    //Setting adapter
     private void loadScoreDetail(String viewUser) {
         adapter = new FirebaseRecyclerAdapter<Score, ScoreDetailViewHolder>(
                 Score.class,
@@ -69,12 +69,12 @@ public class ScoreDetail extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(ScoreDetailViewHolder scoreDetailViewHolder, Score score, int i) {
-                scoreDetailViewHolder.txt_cname.setText(score.getCategoryName());
-                scoreDetailViewHolder.txt_cscore.setText(score.getScore());
+                scoreDetailViewHolder.txt_cname.setText(score.getCategoryName());           //showing category name
+                scoreDetailViewHolder.txt_cscore.setText(score.getScore());                 //showing category score
             }
         };
         adapter.notifyDataSetChanged();
-        scoreList.setAdapter(adapter);
+        scoreList.setAdapter(adapter);      //applying adapter
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ScoreDetail extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {      //get back to Ranking Activity
         switch (item.getItemId()) {
             case android.R.id.home:
                 Intent intent = new Intent(getApplicationContext(), RankingActivity.class);

@@ -1,6 +1,6 @@
 package com.example.worldquiz.user;
 
-public class User {
+public class User {             //User model to upload data to firebase User path
         private String name;
         private String userName;
         private String email;

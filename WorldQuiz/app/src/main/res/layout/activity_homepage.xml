@@ -5,17 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Homepage">
-
+    tools:context=".Homepage"
+    android:background="@drawable/galaxy_bg">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/star_bg1">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/AppTheme.AppBarOverLay"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,13 +30,14 @@
                 android:layout_height="130dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="13dp"
+                android:layout_marginBottom="2dp"
                 app:srcCompat="@drawable/quiz" />
         </androidx.appcompat.widget.Toolbar>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="6dp"
 
             android:layout_marginLeft="8dp"
@@ -46,13 +48,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:onClick="profileUpdate"/>
+        <ProgressBar
+            android:id="@+id/progressbar_homeImage"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="13dp"/>
 
         <TextView
             android:id="@+id/txt_player_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Welcome, player"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="@+id/profile_image"
             app:layout_constraintTop_toBottomOf="@+id/profile_image"
@@ -95,7 +106,7 @@
             android:onClick="Scoreboard"/>
 
         <ImageView
-            android:id="@+id/share"
+            android:id="@+id/question"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
@@ -105,35 +116,45 @@
             android:layout_marginRight="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/score_board"
+            android:onClick="Howtoplay"
+            app:srcCompat="@drawable/question"
+            />
+
+        <ImageView
+            android:id="@+id/share"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/question"
             android:onClick="Sharing"
             app:srcCompat="@drawable/share"
             />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+
+            android:text="Categories"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:padding="10dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Categories"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="25sp"/>
-
-    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyler_category"
-        android:layout_margin="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
 

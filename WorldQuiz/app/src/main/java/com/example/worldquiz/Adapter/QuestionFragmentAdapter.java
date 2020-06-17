@@ -12,7 +12,7 @@ import com.example.worldquiz.QuestionFragment;
 
 import java.util.List;
 
-public class QuestionFragmentAdapter extends FragmentPagerAdapter {
+public class QuestionFragmentAdapter extends FragmentPagerAdapter {     //Question Fragment Adapter for showing Question Fragment
 
     Context context;
     List<QuestionFragment> fragmentList;

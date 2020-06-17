@@ -18,9 +18,11 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     MaterialEditText userName, password;                //signin function
     MaterialEditText forget_pass_info;      //forget password function
     Button bsignin, bsignup;
-    ProgressBar progressBar,progressBar1,progressBar_forget;
+    ProgressBar progressBar,progressBar1,progressBar_forget, progressBar_auto;
     CheckBox checkBox;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference users,ranking;
     FirebaseAuth fAuth;
 
+    LinearLayout linearLayout;
 
     TextView forgetpass;
 
@@ -79,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         ranking = database.getReference("Ranking");
         fAuth = FirebaseAuth.getInstance();
 
+        progressBar_auto = findViewById(R.id.progressBar_auto);
+        linearLayout = findViewById(R.id.layout_auto);
 
         progressBar1 = findViewById(R.id.progressbar1);
         checkBox = findViewById(R.id.checkBox);
@@ -97,24 +103,64 @@ public class MainActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
         checkPreferences();
 
-        bsignup.setOnClickListener(new View.OnClickListener() {     //Open Sign Up dialog
+        final String autologin = sharedPreferences.getString("autologin","");
+
+        if (fAuth.getCurrentUser() != null) {       //if user is not logging out, the app will go straight to homepage
+            progressBar_auto.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.VISIBLE);
+            //Disable user interaction when auto-logging in
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            users.addListenerForSingleValueEvent(new ValueEventListener() {              //add Listener for "user" path in firebase database
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    final User login = dataSnapshot.child(autologin).getValue(User.class);           //get user value using their user name in "user" path base on User.class
+                    ranking.addListenerForSingleValueEvent(new ValueEventListener() {               //add Listener for "Ranking" path in firebase database
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            final Ranking rank = dataSnapshot.child(autologin).getValue(Ranking.class);      //get user value using their user name in "user" path base on User.class
+                            // in order to retrieve the photo URL stored in "Ranking" path and display it as user profile photo
+                            Common.currentUser = login;                 //saving user value in Common.currentUser (for getting current player's username, name,etc)
+                            Common.rankingimage = rank;                 //saving ranking value in Common.rankingimage (for getting user profile photo, total score;  display it in Homepage and UserProfile Activity)
+                            startActivity(new Intent(MainActivity.this,Homepage.class));
+                            progressBar_auto.setVisibility(View.GONE);
+                            linearLayout.setVisibility(View.GONE);
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) { }
+                    });
+
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) { }
+            });
+        }
+
+        //Open Sign Up dialog
+        bsignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSignUpDialog();
             }
         });
 
-        bsignin.setOnClickListener(new View.OnClickListener() {     //Login function
+        //Login function
+        bsignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                editor.putString("autologin",userName.getText().toString());        //save username for auto-logging in method
+                editor.commit();
+
                 if (checkBox.isChecked()) {         //if checkbox is checked, login and password will be stored
-                    editor.putString("email",userName.getText().toString());
+                    editor.putString("username",userName.getText().toString());
                     editor.putString("password",password.getText().toString());
                     editor.commit();
                 }
                 else {
-                    editor.putString("email","");
+                    editor.putString("username","");
                     editor.putString("password","");
                     editor.commit();
                 }
@@ -126,7 +172,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        forgetpass.setOnClickListener(new View.OnClickListener() {      //open forget password dialog
+
+        //Forget password function
+        forgetpass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 forgetPassword();
@@ -134,13 +182,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void forgetPassword() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);     //Open Alert Dialog
         alertDialog.setTitle("Recover Password");
         alertDialog.setMessage("We are here to help!");
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View forget_pass_layout = inflater.inflate(R.layout.forget_pass_layout,null);       //get forget_password_layout
+        final View forget_pass_layout = inflater.inflate(R.layout.forget_pass_layout,null);       //get forget_password_layout
 
         forget_pass_info = (MaterialEditText)forget_pass_layout.findViewById(R.id.forget_pass_info);
         progressBar_forget = forget_pass_layout.findViewById(R.id.progressbar_forget);
@@ -180,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 else
-                {
+                {   forget_pass_info.setEnabled(false);     //set edit text disable
                     progressBar_forget.setVisibility(View.VISIBLE);
                     users.addListenerForSingleValueEvent(new ValueEventListener() {             //add Listener for "users" in database
 
@@ -204,11 +253,14 @@ public class MainActivity extends AppCompatActivity {
                                                     Toast.makeText(MainActivity.this, "Check your email for Password Reset", Toast.LENGTH_LONG).show();
                                                     dialog.dismiss();
                                                 } else {
+                                                    forget_pass_info.setEnabled(true);
                                                     Toast.makeText(MainActivity.this,"Username does not exist", Toast.LENGTH_LONG).show();
                                                 }
                                             }
                                         });
-                                    } else {                                                //if the input is not email or username that stored on database then notice to user
+                                    } else {
+                                        forget_pass_info.setEnabled(true);  //set edit text enable again
+                                        //if the input is not email or username that stored on database then notice to user
                                         Toast.makeText(MainActivity.this, "Email does not register or Username does not exist", Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -244,7 +296,10 @@ public class MainActivity extends AppCompatActivity {
             password.requestFocus();
             return;
         }
+
         progressBar1.setVisibility(View.VISIBLE);
+        userName.setEnabled(false);     //disable edit text when login button is clicked
+        password.setEnabled(false);     //disable edit text when login button is clicked
         users.addListenerForSingleValueEvent(new ValueEventListener() {              //add Listener for "user" path in firebase database
 
             @Override
@@ -271,7 +326,12 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                         else
+                                        {   progressBar1.setVisibility(View.GONE);
+                                            userName.setEnabled(true);     //set edit text enable
+                                            password.setEnabled(true);     //set edit text enable
                                             Toast.makeText(MainActivity.this,"Wrong password", Toast.LENGTH_SHORT).show();      //notice user if password is wrong
+
+                                        }
                                     }
                                 });
                             }
@@ -288,6 +348,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 else {
+                    userName.setEnabled(true);     //set edit text enable
+                    password.setEnabled(true);     //set edit text enable
                     progressBar1.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this,"User does not exist", Toast.LENGTH_SHORT).show();         //notice if user does not stored (or register) in firebase
 
@@ -315,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
         newPassword = (MaterialEditText)sign_up_layout.findViewById(R.id.newPassword);
         newEmail = (MaterialEditText)sign_up_layout.findViewById(R.id.newEmail);
         progressBar = sign_up_layout.findViewById(R.id.progressbar);
+
 
 
         alertDialog.setView(sign_up_layout);                                //set layout for view
@@ -378,6 +441,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    newName.setEnabled(false);          //disable edit text when register button is clicked
+                    newUserName.setEnabled(false);      //disable edit text when register button is clicked
+                    newPassword.setEnabled(false);      //disable edit text when register button is clicked
+                    newEmail.setEnabled(false);         //disable edit text when register button is clicked
                     progressBar.setVisibility(View.VISIBLE);
                     final User user = new User(newName.getText().toString().trim(),             //Creating user model (User.class model) to retrieve the input
                             newUserName.getText().toString().trim(),
@@ -389,6 +456,10 @@ public class MainActivity extends AppCompatActivity {
 
                             if(dataSnapshot.child(user.getUserName()).exists()){            //Check if the user is exist or not
                                 progressBar.setVisibility(View.GONE);
+                                newName.setEnabled(true);          //enable edit text again
+                                newUserName.setEnabled(true);      //enable edit text again
+                                newPassword.setEnabled(true);      //enable edit text again
+                                newEmail.setEnabled(true);        //enable edit text again
                                 Toast.makeText(MainActivity.this,"User already existed!",Toast.LENGTH_SHORT).show();
 
                             }
@@ -410,6 +481,10 @@ public class MainActivity extends AppCompatActivity {
 
                                                 }
                                                 else {
+                                                    newName.setEnabled(true);          //enable edit text again
+                                                    newUserName.setEnabled(true);      //enable edit text again
+                                                    newPassword.setEnabled(true);      //enable edit text again
+                                                    newEmail.setEnabled(true);        //enable edit text again
                                                     progressBar.setVisibility(View.GONE);
                                                     Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show(); //notice user if error occur
                                                 }
@@ -432,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkPreferences() {           //Get and set data for login field if Remember Me function is enabled
-        String mail = sharedPreferences.getString("email","");
+        String mail = sharedPreferences.getString("username","");
         String pass = sharedPreferences.getString("password","");
         userName.setText(mail);
         password.setText(pass);

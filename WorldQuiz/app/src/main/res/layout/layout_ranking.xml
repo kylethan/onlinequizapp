@@ -7,7 +7,8 @@
     android:padding="16dp"
     android:layout_margin="16dp"
     app:cardElevation="4dp"
-    android:background="@android:color/holo_blue_bright"
+    app:cardCornerRadius="12dp"
+
     >
 
     <LinearLayout
@@ -17,7 +18,7 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_bg_white">
+        >
         <TextView
             android:id="@+id/txt_ranking"
             android:text="1"

@@ -21,7 +21,7 @@ public class RankingAdapter extends RecyclerView.ViewHolder implements View.OnCl
 
     private ItemClickListener itemClickListener;
 
-    public RankingAdapter(@NonNull View itemView) {
+    public RankingAdapter(@NonNull View itemView) {     //declare variables
         super(itemView);
         txt_ranking = (TextView) itemView.findViewById(R.id.txt_ranking);
         txt_name = (TextView) itemView.findViewById(R.id.txt_name);
@@ -31,7 +31,7 @@ public class RankingAdapter extends RecyclerView.ViewHolder implements View.OnCl
         itemView.setOnClickListener(this);
     }
 
-    public void setItemClickListener(ItemClickListener itemClickListener) {
+    public void setItemClickListener(ItemClickListener itemClickListener) {     //setting itemClick
         this.itemClickListener = itemClickListener;
     }
 

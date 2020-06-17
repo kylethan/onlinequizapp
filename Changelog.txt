@@ -106,3 +106,17 @@ SIT305 Assignment 2 - World Quiz
 14/06/2020
 - Fixing some profile Image problem that only be seen by current user: now all user can see their competitors' images
 - Editing some UI such as Score Detail and homepage,etc
+
+15/06/2020
+- Change checkbox to radio button for questions.
+- Changing UI of Scoreboard and Result activity.
+- Add how to play dialog display first time when user first logging in. User have a option to make it not show again.
+- Adding auto logging in when user use the app again
+- Updating questions in SQLite
+
+16/06/2020
+- Fixing the gameplay: player now can change to any question using question tab.
+- Editing UI for Result activity
+- Creating buttons for moving questions.
+- Updating questions and question images
+- Editing Ui in question Activity

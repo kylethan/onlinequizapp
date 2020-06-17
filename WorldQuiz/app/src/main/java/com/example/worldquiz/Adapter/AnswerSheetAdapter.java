@@ -15,7 +15,7 @@ import com.example.worldquiz.R;
 
 import java.util.List;
 
-public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.MyViewHolder> {
+public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.MyViewHolder> {         //AnswerSheetAdapter showing the condition of the Answer Sheet in Question Activity
 
     Context context;
     List<CurrentQuestion> currentQuestionList;
@@ -33,7 +33,7 @@ public class AnswerSheetAdapter extends RecyclerView.Adapter<AnswerSheetAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {      //Chaning color of the sheet base on Answer type
         holder.txt_question_number.setText(String.valueOf(position+1));
         if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.RIGHT_ANSWER)
             holder.question_item.setBackgroundResource(R.drawable.grid_question_right_answer);

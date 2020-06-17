@@ -2,7 +2,7 @@ package com.example.worldquiz.Model;
 
 import com.example.worldquiz.Common.Common;
 
-public class CurrentQuestion {
+public class CurrentQuestion {          //CurrentQuestion Model
     private int questionIndex;
     private Common.ANSWER_TYPE type;
 

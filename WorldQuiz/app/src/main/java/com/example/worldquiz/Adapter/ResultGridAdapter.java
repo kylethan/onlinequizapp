@@ -42,20 +42,20 @@ public class ResultGridAdapter extends RecyclerView.Adapter<ResultGridAdapter.My
         Drawable img;
 
         //Changing color base on result
-        holder.btn_question.setText(new StringBuilder("Question ").append(currentQuestionList.get(position).getQuestionIndex()+1));
+        holder.btn_question.setText(new StringBuilder().append(currentQuestionList.get(position).getQuestionIndex()+1));
         if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.RIGHT_ANSWER) {
-            holder.btn_question.setBackgroundColor(Color.parseColor("#ff99cc00"));
-            img = context.getResources().getDrawable(R.drawable.ic_check_white_24dp);
-            holder.btn_question.setCompoundDrawablesWithIntrinsicBounds(null,null,null,img);
+            holder.btn_question.setBackgroundResource(R.drawable.grid_question_right_answer);
+            img = context.getResources().getDrawable(R.drawable.ic_check_white_24dp);               //changing answer state icon
+            holder.btn_question.setCompoundDrawablesWithIntrinsicBounds(null,null,null,img);        //apply their position
         }
         else if (currentQuestionList.get(position).getType() == Common.ANSWER_TYPE.WRONG_ANSWER) {
-            holder.btn_question.setBackgroundColor(Color.parseColor("#ffcc0000"));
-            img = context.getResources().getDrawable(R.drawable.ic_clear_white_24dp);
-            holder.btn_question.setCompoundDrawablesWithIntrinsicBounds(null,null,null,img);
+            holder.btn_question.setBackgroundResource(R.drawable.grid_question_wrong_answer);
+            img = context.getResources().getDrawable(R.drawable.ic_clear_white_24dp);                //changing answer state icon
+            holder.btn_question.setCompoundDrawablesWithIntrinsicBounds(null,null,null,img);        //apply their position
         }
         else {
-            img = context.getResources().getDrawable(R.drawable.ic_error_outline_white_24dp);
-            holder.btn_question.setCompoundDrawablesWithIntrinsicBounds(null,null,null,img);
+            img = context.getResources().getDrawable(R.drawable.ic_error_outline_white_24dp);                //changing answer state icon
+            holder.btn_question.setCompoundDrawablesWithIntrinsicBounds(null,null,null,img);        //apply their position
         }
     }
 
@@ -70,7 +70,7 @@ public class ResultGridAdapter extends RecyclerView.Adapter<ResultGridAdapter.My
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            btn_question = (Button) itemView.findViewById(R.id.btn_question);
+            btn_question = (Button) itemView.findViewById(R.id.btn_question);           //The Result Grid Item work as button, when being clicked, user will be taken to the specific question Fragment with BroadcastManager
             btn_question.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

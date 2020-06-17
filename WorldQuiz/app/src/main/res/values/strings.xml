@@ -18,4 +18,12 @@
     <string name="button">I UNDERSTAND</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="How_to_play">This is a very special game genre Multiple Choice.\n\n
+Similar to other MCQ games, you have the right to choose the answer A, B, C, or D. There are multiple ways to move to other questions: \n
+        - Left or right swiping \n
+        - question tab tapping \n
+        - Using the arrow button \n\n
+        However, you will not be able to make a second decision to change the answer if you have moved to another question.\n\n
+        Hence, you need to try to give the most accurate answer! \n\n
+After all, this is how World Quiz works!</string>
 </resources>

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-public class Common {
+public class Common {               //Common class to store variables for common use
 
     public static final int TOTAL_TIME = 10*60*1000;    //10 minutes
     public static final String KEY_BACK_FROM_RESULT = "BACK_FROM_RESULT";
@@ -34,7 +34,7 @@ public class Common {
     public static CurrentQuestion currentQuestion;
     public static String imageurl ="https://firebasestorage.googleapis.com/v0/b/onlinequizapp-871e0.appspot.com/o/uploads?alt=media&token=891f83a2-10e4-4916-b071-deabbbb0fcd2";
     public static Ranking rankingimage;
-    public static String currentimage= "https://firebasestorage.googleapis.com/v0/b/onlinequizapp-871e0.appspot.com/o/uploads?alt=media&token=891f83a2-10e4-4916-b071-deabbbb0fcd2";
+
 
 
     public enum ANSWER_TYPE{

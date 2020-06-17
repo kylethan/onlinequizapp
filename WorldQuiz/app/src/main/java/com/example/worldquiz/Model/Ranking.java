@@ -1,6 +1,6 @@
 package com.example.worldquiz.Model;
 
-public class Ranking {
+public class Ranking {          //Ranking model to upload data in Ranking path
     private String name;
     private long score;
     private String profileImage;

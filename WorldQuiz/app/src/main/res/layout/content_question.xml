@@ -10,44 +10,68 @@
     tools:showIn="@layout/app_bar_question">
 
     <RelativeLayout
-        android:background="@color/colorPrimary"
+
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/txt_question_right"
+            android:visibility="gone"
+            android:layout_marginLeft="8dp"
+            android:text="0"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:background="@drawable/right_answer_bg"
+            android:layout_below="@+id/txt_timer"
+            android:layout_toLeftOf="@+id/txt_wrong_answer"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             android:id="@+id/grid_answer"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
 
-        <TextView
-            android:id="@+id/txt_question_right"
-            android:layout_toRightOf="@+id/grid_answer"
-            android:layout_marginLeft="8dp"
-            android:text="0/30"
-            android:layout_centerVertical="true"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+
 
         <TextView
             android:id="@+id/txt_timer"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="8dp"
+            android:visibility="gone"
             android:text="20:00"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="8dp"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/txt_wrong_answer"
+            android:text="1"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:padding="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/txt_timer"
+            android:background="@drawable/text_view_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"/>
 
     </RelativeLayout>
 
@@ -60,13 +84,35 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/sliding"
             app:tabMode="scrollable"
+            app:tabTextColor="#D0D3D4"
+            app:tabSelectedTextColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></com.google.android.material.tabs.TabLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpaper"
-            android:background="@android:color/white"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></androidx.viewpager.widget.ViewPager>
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpaper"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </androidx.viewpager.widget.ViewPager>
+            <ImageView
+                android:id="@+id/back_arrow"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_baseline_arrow_left_24" />
+            <ImageView
+                android:id="@+id/forward_arrow"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_baseline_arrow_right_24" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 </LinearLayout>

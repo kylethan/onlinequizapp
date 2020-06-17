@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DBHelper extends SQLiteAssetHelper {
 
-    private static final String DB_NAME ="EDMTQuiz2019.db";
+    private static final String DB_NAME ="WorldQuiz2020.db";
     private static final int DB_VER = 1;
 
     private static DBHelper instance;

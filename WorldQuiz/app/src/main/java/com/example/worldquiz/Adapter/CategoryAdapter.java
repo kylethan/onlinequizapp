@@ -24,7 +24,7 @@ import java.util.List;
 
 
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {       //Category Adapter showing all category name and image
 
     Context context;
     List<Category> categories;
