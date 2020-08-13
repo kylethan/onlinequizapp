@@ -330,7 +330,6 @@ public class MainActivity extends AppCompatActivity {
                                             userName.setEnabled(true);     //set edit text enable
                                             password.setEnabled(true);     //set edit text enable
                                             Toast.makeText(MainActivity.this,"Wrong password", Toast.LENGTH_SHORT).show();      //notice user if password is wrong
-
                                         }
                                     }
                                 });
@@ -350,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     userName.setEnabled(true);     //set edit text enable
                     password.setEnabled(true);     //set edit text enable
+                    bsignin.setEnabled(true);
                     progressBar1.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this,"User does not exist", Toast.LENGTH_SHORT).show();         //notice if user does not stored (or register) in firebase
 
@@ -477,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
                                                     progressBar.setVisibility(View.GONE);
                                                     users.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                                                     Toast.makeText(MainActivity.this, "User Register successfully!",Toast.LENGTH_SHORT).show();     //Notice user if register successfully
+                                                    FirebaseAuth.getInstance().signOut();
                                                     dialog.dismiss();                       //dismiss dialog after register successful
 
                                                 }

@@ -82,9 +82,8 @@ public class ProfileActivity extends AppCompatActivity {
         users = database.getReference("Users");
         ranking = database.getReference("Ranking");
         score = database.getReference("Score");
-        profileImage = database.getReference("ProfileImage");
 
-        storageReference = FirebaseStorage.getInstance().getReference(Common.currentUser.getUserName());
+        storageReference = FirebaseStorage.getInstance().getReference().child("images/"+ Common.currentUser.getUserName());
 
         progressBar = findViewById(R.id.progressbarud);
         progressBar_profile = findViewById(R.id.progressbar_profile);
